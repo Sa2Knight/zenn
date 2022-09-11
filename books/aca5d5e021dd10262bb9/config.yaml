@@ -1,4 +1,5 @@
 title: "Vue と CSF によるモダンな Storybook 6 のはじめかた"
+allow_override: true
 summary: |-
   Storybook は、UIコンポーネントをサンドボックス上で動作させることで、デザインや振る舞いを開発環境を立ち上げずに確認できるUIカタログを作成するためのツールです。
 
