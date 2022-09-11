@@ -1,0 +1,33 @@
+title: "Vue と CSF によるモダンな Storybook 6 のはじめかた"
+summary: |-
+  Storybook は、UIコンポーネントをサンドボックス上で動作させることで、デザインや振る舞いを開発環境を立ち上げずに確認できるUIカタログを作成するためのツールです。
+
+  本書では、現状(2020/10/26 時点) 最新版である Storybook 6.0.7 と、 Vue 2.6.11 を用いて、 CSF(Component Story Format) によるUIカタログの作成を行います。
+
+  内容のベースは公式ドキュメントのままですが、日本語で噛み砕きつつ、全体を俯瞰するよりも、ハンズオンでステップアップ学習できるような構成を心掛けています。
+
+  また、 CSF を使ったストーリーの定義や、 Storybook 6 特有の機能を用いるため、Storybook を初めて使う方に限らず、以前から使用しているが、最新の使い方をキャッチアップしたいという方にもオススメです。
+
+  なお、筆者は業務で Storybook 6.x を活用した Vue アプリケーション開発の生産性向上の取り組みを本業で行っており、その事例などについて以下ブログで紹介しております。
+  https://medium.com/studist-dev/upgrade-to-storybook-6-42da05471e7d
+topics:
+  - "storybook"
+  - "vue"
+published: true
+price: 0
+toc_depth: 1
+chapters:
+  - "003e84"
+  - "2ae138"
+  - "b63b1f"
+  - "e61f4f"
+  - "d21f36"
+  - "1c420c"
+  - "6db9c4"
+  - "747ec7"
+  - "bad1b3"
+  - "41b16f"
+  - "b4cfb8"
+  - "958abe"
+  - "d10c59"
+  - "04a0f6"

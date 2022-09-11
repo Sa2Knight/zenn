@@ -1,8 +1,12 @@
 ---
 title: "Cypress で Vue 3 コンポーネントを楽々テストしちゃおう"
 emoji: "🎉"
-type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["javascript", "typescript", "vue", "cypress"]
+type: "tech"
+topics:
+  - "javascript"
+  - "typescript"
+  - "vue"
+  - "cypress"
 published: false
 ---
 
