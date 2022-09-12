@@ -1,5 +1,5 @@
 ---
-title: "Cypress で Vue 3 コンポーネントを楽々テストしちゃおう"
+title: "Cypress でコンポーネントを楽々テストしちゃおう"
 emoji: "🎉"
 type: "tech"
 topics:
@@ -12,15 +12,18 @@ published: false
 
 # 概要
 
-本記事では、オープンソースのE2Eテストフレームワークである [Cypress](https://www.cypress.io/) の [Component Testing](https://docs.cypress.io/guides/component-testing/) を用いて、 [Vue 3](https://v3.ja.vuejs.org/) のコンポーネントのテストを書く手法といくつかのレシピを紹介します。
+本記事では、オープンソースのE2Eテストフレームワークである [Cypress](https://www.cypress.io/) の [Component Testing](https://docs.cypress.io/guides/component-testing/) を用いて、 [Vue 3](https://v3.ja.vuejs.org/) のコンポーネントのテストを書く手法及びいくつかのレシピを紹介します。
+
+**本記事は `Vue` を用いていますが、 `React` でも基本的には同様ですので適宜読み替えてください。**
 
 想定読者は主に以下の方々です。
 
 - モダンなコンポーネントテストの手法例を知りたい
-- Cypress を E2E テストで使用しているが、コンポーネントテストでの利用にも興味がある
-- Vue コンポーネントの最適なテスト手法を探している
+- `Cypress` を E2E テストで使用しているが、コンポーネントテストでの利用にも興味がある
+- コンポーネントの最適なテスト手法を探している
 
 基本的には公式ドキュメントの内容をベースにしていますが、要所を抜き出したり、サンプルコードをよりイメージしやすいものにしたり、実際のプロダクトレベルで使用するための各種調整などを追加しています。
+
 
 # 技術構成
 
@@ -30,39 +33,39 @@ published: false
 - `Vite`: 3.1.0
 - `yarn`: 1.22.19
 
-技術構成を `React` や `Webpack` に差し替えてもコンポーネントテストは可能ですが、本記事では筆者自身の好みである上記構成で進めます。
-
 # 注意事項
 
 - `Cypress` 自体の説明は最低限に留めます
 - `Cypress` の `Component Testing` は記事公開時点でβ機能です
-- Vue コンポーネントは Vue 2 ユーザーの方にもわかりやすいよう、 `<script setup>` 含む `Composition API` は使用せず、 `Option API` で記述します
+- `Vue` コンポーネントは Vue 2 ユーザーの方にもわかりやすいよう、 `<script setup>` 含む `Composition API` よりも従来の `Option API` を主に使用します
 
 # Cypress について
 
-`Cypress` は一言でいうと**モダンWebアプリケーションのための次世代フロントエンドツール**です。
+`Cypress` は一言でいうと、**モダンWebアプリケーションのための次世代フロントエンドツール**です。
 
-**テストのセットアップ、作成、実行、デバッグを1パッケージですぐに利用可能**で、ブラウザと一体化した `Cypress` アプリケーション内に `iframe` でテスト対象アプリケーションを埋め込む独自の仕組みを提供します。
+**テストのセットアップ、作成、実行、デバッグを1パッケージですぐに利用可能**で、ブラウザと一体化した `Cypress` アプリケーション内に `iframe` でテスト対象アプリケーションを埋め込むという独自の形式のテストツールになっています。
 
-これだけだとどんなツールなのかイメージが湧きづらいと思いますが、公式サイトに掲載されている以下動画に目を通すとイメージが湧くと思います。
+これだけだとどんなツールなのかイメージが湧きづらいと思いますので、初めての方には以下の動画がオススメです。
 
 https://vimeo.com/237527670
 
-また、公式ドキュメントに目を通すのが一番確実ですが、筆者が `Cypress` に初めて触れた際にざっくりとメモをとったスクラップが以下になりますのでご参考までどうぞ。
+また、公式ドキュメントに目を通すのが一番確実ですが、筆者が `Cypress` に初めて触れた際にざっくりとメモをとったスクラップがありますのでご参考までどうぞ。
 
 https://zenn.dev/sa2knight/scraps/b5946489946802
 
 # Component Testing について
 
-Component Testing (以降、コンポーネントテスト) は、E2Eテストを主軸としてきた `Cypress` に新たに追加されたテストモードで、React や Vue といったコンポーネント指向フレームワークにおける、コンポーネントレベルの単体テストを、ブラウザベースで行うものです。
+Component Testing (以降、コンポーネントテスト) は、E2Eテストを主目的としてきた `Cypress` に新たに追加されたテストモードです。
 
-E2E テストでは `iframe` 内にテスト対象の Webサイトを実際に読み込んで操作するというプロセスでしたが、**コンポーネントテストでは任意のビルドツールを使って、コンポーネント単体をビルドし、サンドボックス上にレンダリングすることで単体でのテストを行う**ことが出来ます。
+`React` や `Vue` といったフレームワークにおける、コンポーネントレベルの単体テストを、E2Eテストと同じように作成することができます。
+
+`Cypress` の E2E テストでは、 `iframe` 内にテスト対象のWebサイトを実際に読み込んで操作するという仕組みでしたが、**コンポーネントテストでは任意のビルドツールを使って、コンポーネント単体をビルドし、同じく `iframe` 上にレンダリングすることで単体でのテストを行う**ことが出来ます。
 
 類似のツールとして [Storybook](https://storybook.js.org/) の [Interaction tests](https://storybook.js.org/docs/react/writing-tests/interaction-testing) がありますが、 `Storybook` がコンポーネントのカタログからドキュメンテーションまで包括的に扱うのに対して、 `Cypress` はテストに特化しているので使い分けの判断はプロジェクトの方針によるのかなと個人的には思います。
 
 # E2Eテストとコンポーネントテストの比較
 
-公式ドキュメント内での比較を整理すると、以下のようになります。
+E2Eテストとコンポーネントテストについて、公式ドキュメント内での比較を整理すると以下のようになります。
 
 ||メリット|デメリット|
 |----|----|----|
@@ -73,19 +76,17 @@ E2E テストでは `iframe` 内にテスト対象の Webサイトを実際に�
 
 # セットアップ
 
-本記事で `Cypress` を使用するテスト対象のプロジェクトを作成します。
+`Cypress` でテストするためのサンプルプロジェクトを作成します。
 
 ## Vue 3 + TypeScript + Vite のスキャフォルド
 
-`Vite` でスキャフォルドするのが最も早いので今回はそれでセットアップします。
+`vite` でスキャフォルドするのが最も早いので今回はそれでセットアップします。
 
 ```bash
 $ yarn create vite --template vue-ts
 $ cd vite-project
 $ yarn install
 ```
-
-今回はコンポーネント単体のビルドに Vite を使用するだけなので、Vue アプリケーション自体は不要のため、開発サーバーを立ち上げる必要がありません。
 
 ## Cypress のセットアップ
 
@@ -95,7 +96,7 @@ $ yarn install
 $ yarn add -D cypress
 ```
 
-`cypress`　をコンポーネントテストモードで起動します。通常は E2E テストモードかを選択する画面を挟みますが、 `--component` オプションを付与するとそれをショートカットできます。
+`cypress`　をコンポーネントテストモードで起動します。通常は E2E テストモードかを選択する画面を挟みますが、 `--component` オプションを付与することでショートカットできます。
 
 ```bash
 $ yarn cypress open --component
@@ -105,7 +106,7 @@ $ yarn cypress open --component
 
 ![](https://storage.googleapis.com/zenn-user-upload/4fa690722e98-20220907.png)
 
-初めにフレームワーク及びバンドラツールの選択画面になります。自動で検知されることもありますが、設定されていない場合、 `Vue.js 3` 及び `Vite` を選択しましょう。
+初めにフレームワーク及びバンドラツールの選択画面になります。自動で検知されることもありますが、検知されない場合は手動で、 `Vue.js 3` 及び `Vite` を選択しましょう。
 
 続けて　`Install Dev Dependencies` 画面になりますが、本記事の手順通りなら既にインストール済みなので `Continue` を押下するだけです。
 
@@ -115,13 +116,14 @@ $ yarn cypress open --component
 
 |ファイル名|内容|
 |---|---|
-|cypress.config.ts|コンポーネントテストで Vue + Vite を使うことが宣言されてる|
+|cypress.config.ts|コンポーネントテストで `Vue` + `vite` を使うことが宣言されてる|
 |cypress/support/component.ts|コンポーネントテスト用の型定義と `mount` コマンドが追加されてる|
 |cypress/support/command.ts|カスタムコマンドを定義するための場所|
 |cypress/support/component-index.html|ビルドしたコンポーネントをレンダリングするための HTML|
 |cypress/fixtures/example.json|テストデータのサンプル(不要)|
 
 続けて `Continue` を押下すると、テストに使用するブラウザの選択画面になるため、任意のブラウザを選択してください。
+(本記事は `Chrome` を使用します)
 
 ![](https://storage.googleapis.com/zenn-user-upload/4aa649a92328-20220907.png)
 
@@ -129,7 +131,7 @@ $ yarn cypress open --component
 
 ## テスト用コンポーネントを作成
 
-以下のようなシンプルな `Stepper` コンポーネントを作成します。
+以下のような `Stepper` コンポーネントを作成します。
 
 ```vue:src/components/Stepper.vue
 <template>
@@ -163,20 +165,22 @@ export default defineComponent({
 仕様は単純で以下の通りです。
 
 - カウント値 `count` を内部で持っている
-- `count` は `props`(`initial`) 経由で初期値を指定することができ、省略時　0 になる
+- `count` は `props`(`initial`) 経由で初期値を指定することができ、省略した場合の初期値は0になる
 - `+` ボタンを押下すると、 `count` がインクリメントされる
 - `-` ボタンを押下すると、 `count` がデクリメントされる
 - 最新の `count` の値が表示される
 
 ## テストコードを作成
 
-前項で `Stepper.vue` を作成した状態で、再度 `Cypress` を起動します。その際、 `--browser` オプションでブラウザの指定もすることでさらに操作を省略できます。
+前項で `Stepper.vue` を作成したので、再度 `Cypress` を起動しましょう。
+
+`Chrome` を使用する場合、`--browser` オプションで指定することでさらに手順を省略できます。
 
 ```bash
 $ yarn cypress open --component --browser chrome
 ```
 
-Chrome が起動し、 `Create your first spec` 画面が表示されるので、 `Create from component` を押下し、先程作成した `Stepper` コンポーネントを選択します。
+`Chrome` が起動し、 `Create your first spec` 画面が表示されるので、 `Create from component` を押下し、先程作成した `Stepper` コンポーネントを選択します。
 
 ![](https://storage.googleapis.com/zenn-user-upload/d4b0f6c5805b-20220907.png)
 
@@ -197,9 +201,12 @@ describe('<Stepper />', () => {
 
 見事、`Stepper` コンポーネントが Cypress アプリケーション上の `iframe` 内にレンダリングされ、コンポーネント単体でのテストが可能な状態になりました。
 
+**このように、`Cypress` では既存のコンポーネントから直接テストコードを作成することが可能で、コンポーネントを `mount` する一見面倒そうな下準備が完了した状態から始めることができます。**
+
+
 ## TypeScript 対応
 
-前項で作成されたテストコードには、 `describe` `it` `cy` といった、 `Cypress` モジュール上のオブジェクトに暗黙に依存しているため、そのままだと TypeScript で解釈することができません。
+前項で作成されたテストコードには、 `describe` `it` `cy` といった、 `Cypress` モジュール上のオブジェクトに暗黙に依存しているため、そのままだと `TypeScript` で解釈することができません。
 
 これらの型宣言が行われている、 `cypress/support/*.ts` を、 `tsconfig` の `include` フィールドに追加することで、型サポートを受けることができます。
 
@@ -213,11 +220,13 @@ describe('<Stepper />', () => {
   ],
 ```
 
-これでセットアップはすべて終了です。作成した `Stepper` コンポーネントを使ったテストコードを書いていきましょう。
+![](https://storage.googleapis.com/zenn-user-upload/cd89b651b27c-20220912.png)
+
+これでセットアップはすべて終了です。`Stepper.cy.ts` にテストコードを追記していきましょう。
 
 # レンダリング内容の検証
 
-改めて、生成されたテストコードを見てみましょう。
+改めて、生成されたテストコードを見てみます。
 
 ```ts:src/components/Stepper.cy.ts
 import Stepper from './Stepper.vue'
@@ -234,11 +243,11 @@ describe('<Stepper />', () => {
 
 [vue-test-utils](https://test-utils.vuejs.org/) の　`mount` に似ていますが、ここでは戻り値 (`vue-test-utils` では慣習的に `wrapper`) を使用することはありません。
 
-`Cypress` のテストコード内で `mount` されたコンポーネントは (ここでは `vite` によって) ビルドされ、`Cypress` アプリケーション上の `iframe` 内に描画されます。
+`Cypress` のテストコード内で `mount` されたコンポーネントは (ここでは `vite` によって) 単体でビルドされ、`Cypress` アプリケーション上の `iframe` 内に描画されます。
 
 そのため、あとは `cy` モジュールを経由することで、E2Eテストと同様の API を用いてテストすることができます。
 
-`Stepper` コンポーネントの `count` は、 `props` を省略した場合は 0 が初期描画されるので、それをテストしてみましょう。
+`Stepper` コンポーネントの `count` は、 `props` を省略した場合は 0 が初期描画されるので、まずはそれをテストしてみましょう。
 
 ```ts:src/components/Stepper.cy.ts
 const counterSelector = '[data-cy=counter]'
@@ -246,24 +255,24 @@ const counterSelector = '[data-cy=counter]'
 describe('<Stepper />', () => {
   it('ステッパーの初期値は 0 である', () => {
     cy.mount(Stepper)
-    cy.get(counterSelector).should('have.text', '0')
+    cy.get(counterSelector).should('have.text', '0') // カウント値を表示する要素に 0 が描画されている
   })
 })
 ```
 
 `Cypress` では要素セレクタに慣習的に `data-cy` 属性を使用するので、カウント値を表示している要素のセレクタを使用します。
 
-あとはE2Eテストと同様に、 `cy.get` `should` を使用して、初期値である　`0` が描画されていることを確認して完了です。
+あとはE2Eテストと同様に、 `cy.get` `should` などを使用して、初期値である　`0` が描画されていることを確認して完了です。
 
 ![](https://storage.googleapis.com/zenn-user-upload/619489c37758-20220908.png)
 
 # props の検証
 
-`Stepper` コンポーネントの `props`　である `initial` を指定して、それが初期値として描画されていることをテストします。
+`Stepper` コンポーネントの `props`　である `initial` を指定して、それがカウント値の初期値として描画されていることをテストします。
 
 ```ts:src/components/Stepper.cy.ts
   it("ステッパーの初期値を props で指定することができる", () => {
-    cy.mount(Stepper, { props: { initial: 100 } });
+    cy.mount(Stepper, { props: { initial: 100 } }); // <Stepper :initial="100" />
     cy.get(counterSelector).should("have.text", "100");
   });
 ```
@@ -346,22 +355,22 @@ export default defineComponent({
 ```ts:src/components/Stepper.cy.ts
   it("+ボタンが押下されると、change イベントでカウンターの値が取得できる", () => {
     const onChangeSpy = cy.spy().as("onChangeSpy");
-    cy.mount(Stepper, { props: { onChange: onChangeSpy } });
+    cy.mount(Stepper, { props: { onChange: onChangeSpy } }); // <Stepper @change="onChangeSpy" />
     cy.get(incrementSelector).click();
     cy.get("@onChangeSpy").should("be.calledWith", 1);
   });
 
   it("-ボタンが押下されると、change イベントでカウンターの値が取得できる", () => {
     const onChangeSpy = cy.spy().as("onChangeSpy");
-    cy.mount(Stepper, { props: { onChange: onChangeSpy } });
+    cy.mount(Stepper, { props: { onChange: onChangeSpy } }); // <Stepper @change="onChangeSpy" />
     cy.get(decrementSelector).click();
     cy.get("@onChangeSpy").should("be.calledWith", -1);
   });
 ```
 
-`cy.spy` で、スパイ関数を作成し、それを後から Cypress API で参照できるように、 `as` で別名を付け、 `change` イベントにバインドします。
+`cy.spy` で、スパイ関数を作成し、それを後から `Cypress` で参照できるよう `as` で別名を付け、 `change` イベントにバインドします。
 
-ここで `change` イベントなのに、 `onChange` というイベント名、かつイベントなのに `props` で渡すという、 Vue らしくないコードに見えますが、これは `vue-test-utils` の慣習に寄せているそうです。
+ここで `change` イベントなのに、 `onChange` というイベント名、かつイベントなのに `props` で渡すという、 `Vue` らしくないコードに見えますが、これは `vue-test-utils` の慣習に寄せているそうです。
 
 > You may notice the syntax above in the non-JSX example relies on binding events to the props key in mount. While this isn't "idiomatic Vue", it's the current signature of Vue Test Utils.
 
@@ -369,23 +378,26 @@ export default defineComponent({
 
 スロットに対して任意の要素を注入できることをテストすることも可能です。
 
-これまでの `Stepper` コンポーネントでは約不足なので、スロットをふんだんに使った、`Modal` コンポーネントを実装します。
+`Stepper` にはスロットを使用する余地が無いので、スロットをふんだんに使った `Modal` コンポーネントを新たに実装します。
 
 ```vue:src/components/Modal.vue
 <template>
   <div class="modal">
     <div data-cy="modal-header">
+      <!-- 名前付きスロット(フォールバックあり)-->
       <slot name="header">
         <span>No Title</span>
       </slot>
       <hr />
     </div>
     <div data-cy="modal-content">
+      <!-- デフォルトスロット -->
       <slot />
     </div>
     <template v-if="$slots.footer">
       <div data-cy="modal-footer">
         <hr />
+        <!-- 名前付きスロット(フォールバックなし)-->
         <slot name="footer" />
       </div>
     </template>
@@ -441,11 +453,13 @@ describe("<Modal />", () => {
   });
 
   it("ヘッダーに名前付きスロットを注入した場合、ヘッダーにスロットの内容が表示される", () => {
+    // <Modal><template #header>Custom Title</template></Modal>
     cy.mount(Modal, { slots: { header: "Custom Title" } });
     cy.get(headerSelector).should("have.text", "Custom Title");
   });
 
   it("デフォルトスロットを注入した場合、モーダルコンテンツにスロットの内容が表示される", () => {
+    // <Modal>Custom Title</Modal>
     cy.mount(Modal, { slots: { default: "Modal Content" } });
     cy.get(contentSelector).should("have.text", "Modal Content");
   });
@@ -456,6 +470,7 @@ describe("<Modal />", () => {
   });
 
   it("フッターに名前付きスロットを注入した場合、フッターにスロットの内容が表示される", () => {
+    // <Modal><template #footer>Custom Footer</template></Modal>
     cy.mount(Modal, { slots: { footer: "Custom Footer" } });
     cy.get(footerSelector).should("have.text", "Custom Footer");
   });
@@ -470,6 +485,7 @@ describe("<Modal />", () => {
 
 ```ts
   it("ヘッダーに名前付きスロットを注入した場合、ヘッダーにスロットの内容が表示される", () => {
+    // <Modal><template #header><h1 data-cy="custom-element">タイトル</h1></template></Modal>
     cy.mount(Modal, {
       slots: { header: h("h1", { "data-cy": "custom-element" }, "タイトル") },
     });
@@ -480,12 +496,13 @@ describe("<Modal />", () => {
 また、今回は登場しませんでしたが、スロットスコープから `props` を受け取る場合は、関数経由で参照することが出来ます。
 
 ```ts
+// <Modal><template #default="{ props }"></template></Modal>
 cy.mount(Modal, { slots: { default: props => props.value } });
 ```
 
 # Vue プラグイン対応
 
-最後に、Vue アプリケーションを開発する場合に多くのケースで導入される [Vue I18n](https://kazupon.github.io/vue-i18n/), [Vue Router](https://router.vuejs.org/), [Pinia](https://pinia.vuejs.org/) に依存したコンポーネントのテストをできるようにします。
+最後に、`Vue` アプリケーションを開発する場合に多くのケースで導入される [Vue I18n](https://kazupon.github.io/vue-i18n/), [Vue Router](https://router.vuejs.org/), [Pinia](https://pinia.vuejs.org/) に依存したコンポーネントのテストをできるようにします。
 
 やや強引ですが、上記3ライブラリすべてに依存する以下のようなコンポーネントを用意し、それを単体テストできるようにします。
 
@@ -498,8 +515,6 @@ $ yarn add pinia vue-i18n vue-router
 ## Pinia
 
 `pinia` は `vuex` の後継であるグローバルステート管理ライブラリです。
-
-https://zenn.dev/sa2knight/articles/74f066b7be24c3
 
 今回はシンプルにカウンターを増減するだけのストアを用意します。
 
@@ -527,7 +542,7 @@ export default createPinia()
 
 ## VueI18n
 
-`VueI18n` は Vue における多言語対応をサポートするライブラリです。
+`VueI18n` は `Vue` における多言語対応をサポートするライブラリです。
 
 今回は一種類のメッセージを、日本語・英語それぞれ定義しておきます。
 
@@ -552,9 +567,11 @@ export default createI18n({ locale: 'ja', messages })
 
 ## VueRouter
 
-`VueRouter` は Vue におけるルーティングライブラリです。
+`VueRouter` は `Vue` におけるルーティングライブラリです。
 
-通常はコンポーネントの単体テストにおいてルーティングを意識する必要はありませんが、VueRouter に対して依存したコードがコンポーネント内で即時実行されることは少なくないと思うので、適当なルートを用意しておきます。
+通常はコンポーネントの単体テストにおいてルーティングを意識する必要はありませんが、`VueRouter` に対して依存したコードがコンポーネント内で即時実行されることは少なくないと思うので、単体テストであれど必要な場合があります。
+
+今回は適当に2種類のルートを定義したルーターを用意します。
 
 ```ts:router.ts
 import { createRouter, createWebHistory } from 'vue-router'
@@ -576,7 +593,7 @@ export default createRouter({ history: createWebHistory(), routes })
 
 ```vue:src/components/Child.vue
 <template>
-  <!-- vuei18n 依存-->
+  <!-- vueI18n 依存-->
   <h1 data-cy="message">{{ $t('message.hello') }}</h1>
   <button data-cy="toggle" @click="toggleLocale">toggleLocale</button>
 
@@ -613,7 +630,7 @@ export default defineComponent({
 
 ## プラグイン注入
 
-`pinia` `VueI18n` `VueRouter` いずれも [Vueプラグイン](https://v3.ja.vuejs.org/guide/plugins.html#%E3%83%95%E3%82%9A%E3%83%A9%E3%82%AF%E3%82%99%E3%82%A4%E3%83%B3) として提供されているため、アプリケーションルートである `main.ts` にて、 Vueインスタンスにプラグインを注入します。
+`pinia` `VueI18n` `VueRouter` いずれも [Vueプラグイン](https://v3.ja.vuejs.org/guide/plugins.html#%E3%83%95%E3%82%9A%E3%83%A9%E3%82%AF%E3%82%99%E3%82%A4%E3%83%B3) として提供されているため、アプリケーションルートである `main.ts` にて、 `Vue` インスタンスにプラグインを注入します。
 
 ```ts:src/main.ts
 import { createApp } from 'vue'
@@ -641,17 +658,17 @@ $ yarn dev
 
 ## 単体テストを書く
 
-アプリケーション上では動作しましたが、 `Cypress` を用いた単体テストではどうでしょうか。
+開発サーバー上では動作しましたが、 `Cypress` を用いた単体テストではどうでしょうか。
 
 これまでと同様の手順で、 `SuperComponent.cy.ts` を作成し、テストの実行を試みます。
 
 ![](https://storage.googleapis.com/zenn-user-upload/391e69de4a17-20220908.png)
 
-`pinia` のセットアップが行われていないというエラーが発生しました。
+おや、`pinia` のセットアップが行われていないというエラーが発生しました。
 
-これは `yarn dev` の場合は `src/main.ts` が最初に実行されるため、そこで各種プラグインのセットアップが行われますが、 `Cypress` の場合は `SuperComponent.vue` を単体でビルドしているだけで、 `src/main.ts` は参照されていないため、セットアップが出来ていないことに起因します。
+これは `yarn dev` の場合は `src/main.ts` が最初に実行されるため、そこで各種プラグインのセットアップが行われますが、 `Cypress` の場合は `SuperComponent.vue` を単体でビルドしているだけで、 `src/main.ts` が実行されていないため、セットアップが出来ていないことに起因します。
 
-ではどうするか。 `cy.mount` 関数を拡張して、プラグインのセットアップを行った Vue インスタンス上でコンポーネントを描画するようにします。
+ではどうするか。 `cy.mount` 関数を拡張して、プラグインのセットアップを行った `Vue` インスタンス上でコンポーネントを描画するようにします。
 
 現状では `cypress/support/component.ts` にて、以下のようにデフォルトの `mount` 関数をそのままコマンド登録しています。
 
@@ -660,7 +677,7 @@ import { mount } from 'cypress/vue'
 Cypress.Commands.add('mount', mount)
 ```
 
-これを拡張し、以下のように対象の Vue コンポーネント経由でグローバルフィールドにアクセスし、プラグインを追加します。
+これを拡張し、以下のように対象の `Vue` コンポーネント経由でグローバルフィールドにアクセスし、プラグインを追加します。
 
 ```ts:cypress/support/component.ts
 import { mount } from 'cypress/vue'
@@ -679,7 +696,7 @@ Cypress.Commands.add('mount', component => {
 
 *※もちろん必要に応じてモックを定義したり初期化したりテストコード側から注入するなどの調整が必要になることはあります*
 
-これで描画されるコンポーネントでもプラグインを参照できるようになりました。せっかくなのでテストコードをこのまま書いていきましょう。
+これでコンポーネント単体でもプラグインを参照できるようになりました。せっかくなのでテストコードをこのまま書いていきましょう。
 
 ```ts:cypress/
 import SuperComponent from './SuperComponent.vue'
@@ -730,7 +747,7 @@ describe('<Child />', () => {
 
 本記事では、オープンソースのE2Eテストフレームワークである [Cypress](https://www.cypress.io/) の [Component Testing](https://docs.cypress.io/guides/component-testing/) を用いて、 [Vue 3](https://v3.ja.vuejs.org/) のコンポーネントのテストを書く手法といくつかのレシピを紹介しました。
 
-個人的には Vue コンポーネントの単体テストを行う最も敷居の低くコスパの高い手法だったなと感動し、その勢いのまま記事化するぐらいには刺さりました。
+個人的には `Vue` コンポーネントの単体テストを行う最も敷居の低くコスパの高い手法だったなと感動し、その勢いのまま記事化するぐらいには刺さりました。
 
 [Storybook](https://storybook.js.org/) の [Interaction tests](https://storybook.js.org/docs/react/writing-tests/interaction-testing) についても同様の感動はしたものの、(やり方が悪かったのか) 微妙にテストが安定しなく、まだまだ使い勝手が良くないと感じていましたが、 `Cypress` は自動リトライ機構が含まれているのもあって、抜群の安定感があるなと感じました。
 
