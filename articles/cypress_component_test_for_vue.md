@@ -1,5 +1,5 @@
 ---
-title: "Cypress でコンポーネントを楽々テストしちゃおう"
+title: "Cypress で Vue 3 コンポーネントを楽々テストしちゃおう"
 emoji: "🎉"
 type: "tech"
 topics:
@@ -7,7 +7,7 @@ topics:
   - "typescript"
   - "vue"
   - "cypress"
-published: false
+published: true
 ---
 
 # 概要
