@@ -2,7 +2,7 @@
 title: "memlab を使って Web サイトのメモリリークを検出しよう"
 emoji: "👌"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["javascript"]
+topics: ["javascript", "memlab"]
 published: true
 ---
 
@@ -86,11 +86,11 @@ module.exports = { url, action, back };
 
 シナリオ実行時に最初に開くURLを返す関数です。
 
-ここでは `YouTube` のトップページを開きます。
+ここでは `YouTube` のトップページの URL を返します。
 
 **2. メモリリークを検出するための任意のアクション**
 
-メモリリーク発生を検出するために行う操作を `Puppeteer` API を用いて記述します。
+メモリリークが発生する可能性がある操作を `Puppeteer` API を用いて記述します。
 
 ここでは先頭の動画へのリンクである要素(`#video-title-link`) を押下することで、動画再生ページに遷移します。
 
@@ -101,7 +101,7 @@ module.exports = { url, action, back };
 ここでは (2) で動画再生画面に遷移していたので、 `YouTube` のロゴである　`#logo-icon` を押下することでトップページに戻ります。
 
 
-以上の (1)(2)(3) をエクスポートするモジュールを作成し、それを `memlab` で実行します。
+以上、 (1)(2)(3) をエクスポートするモジュールを作成し、それを `memlab` で実行します。
 
 # サンプルコードを実行する
 
@@ -159,6 +159,7 @@ export default function DetachedDom() {
     if (!window.leakedObjects) {
       window.leakedObjects = [];
     }
+    // 凶悪なメモリリークを引き起こすコード
     for (let i = 0; i < 1024; i++) {
       window.leakedObjects.push(document.createElement('div'));
     }
