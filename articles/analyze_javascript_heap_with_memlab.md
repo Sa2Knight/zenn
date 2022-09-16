@@ -218,7 +218,7 @@ module.exports = { action, back, url };
 
 ## メモリリークを検出する
 
-前述にシナリオを `memlab` で実行します。
+前述のシナリオを `memlab` で実行します。
 
 ```bash
 memlab run --scenario 02_find_memory_leaks.js
