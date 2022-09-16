@@ -336,7 +336,7 @@ module.exports = { action, back, url };
 ## メモリリークを検出する(失敗例)
 
 ```bash
-$ memlab run --scenario 03_find_oversiz3ed_object.j
+$ memlab run --scenario 03_find_oversiz3ed_object.js
 ```
 
 ![](https://storage.googleapis.com/zenn-user-upload/376fbb615f89-20220915.png)
