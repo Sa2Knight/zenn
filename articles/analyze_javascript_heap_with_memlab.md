@@ -276,7 +276,7 @@ memlab run --scenario 02_find_memory_leaks.js
 
 ![](https://storage.googleapis.com/zenn-user-upload/8e67d5f38d7e-20220915.png)
 
-本ページのコードは以下のようになっており、巨大オブジェクト(`bigArray`) に依存したイベントハンドラを、元にイベントの購読を行っています。
+本ページのコードは以下のようになっており、巨大オブジェクト(`bigArray`) に依存したイベントハンドラ使ったイベントの購読を行っています。
 
 *コードに React の文脈を含みますが、ご存知でない方は雰囲気で読んでください*
 
