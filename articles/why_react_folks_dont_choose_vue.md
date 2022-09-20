@@ -3,7 +3,7 @@ title: "[Twitter] React ユーザーが Vue を選ばない理由"
 emoji: "👻"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "react", "vue"]
-published: false
+published: true
 ---
 
 # 概要
