@@ -1,5 +1,5 @@
 ---
-title: "create-vue で学ぶ、Vue 3 + TypeScript のための tsconfig.json"
+title: "create-vue で学ぶ tsconfig.json"
 emoji: "😎"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "typescript", "vue"]
