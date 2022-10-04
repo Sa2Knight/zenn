@@ -8,7 +8,7 @@ published: true
 
 # 概要
 
-現状の [Next.js](https://nextjs.org/) は [webpack](https://webpack.js.org/) を利用しているため、通常なら [Storybook](https://storybook.js.org/) を導入する際にあわせて `webpack` を使用していますが、 `Storybook` ぐらいは [Vite](https://ja.vitejs.dev/) の爆速HMR を使用したいので差し替えてみた差異の作業メモになります。
+現状の [Next.js](https://nextjs.org/) は [webpack](https://webpack.js.org/) を利用しているため、通常なら [Storybook](https://storybook.js.org/) を導入する際はあわせて `webpack` を使用していますが、 `Storybook` ぐらいは [Vite](https://ja.vitejs.dev/) の爆速HMR を使用したいので差し替えてみた差異の作業メモになります。
 
 :::message
 本記事では `Storybook` 6.x を使用します。後継の 7.x ではビルダー周りの仕組みが大きく変わるためご注意ください。
@@ -16,7 +16,7 @@ published: true
 
 # webpack 5 ビルダーのアンインストール
 
-`webpack` を使って Storybook をビルドしてると思うので、これを削除しちゃいます。
+`webpack` を使って Storybook をビルドしていると思うので、これを削除しちゃいます。
 (`yarn` を使用しますが、 `npm` の場合は適宜読み替えてください)
 
 ```bash
@@ -25,7 +25,7 @@ $ yarn remove @storybook/builder-webpack5 @storybook/manager-webpack5
 
 # vite と vite ビルダーのインストール
 
-`Next.js` では `Vite` を使用していないので、 `Vite` 本体ごと追加でインストールします。
+`Next.js` では `Vite` を使用していないので、 `Vite` 本体とビルダーをインストールします。
 
 ```bash
 yarn add -D vite @storybook/builder-vite
