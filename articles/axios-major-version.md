@@ -121,7 +121,8 @@ instance.interceptors.response.use(() => {});
 instance.interceptors.response.clear(); // ↑を解除
 ```
 
-が、これも例によって `TypeScript` の対応が漏れていたため PR を出しましたが、次のバージョンまでは `TypeScript` では使えません…。
+ちなみに、これも例によって `TypeScript` の対応が漏れていましたが、PR を出して `v1.1.0` でリリースされました。　
+
 https://github.com/axios/axios/pull/5010
 
 ## `transformResponse` のコールバックに HTTPステータスを追加
