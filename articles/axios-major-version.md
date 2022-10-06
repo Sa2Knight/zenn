@@ -2,19 +2,19 @@
 title: "axios は v1.0.0 でどう変わるのか"
 emoji: "👏"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["javascript", "typescript"]
+topics: ["javascript", "axios"]
 published: false
 ---
 
 # 概要
 
-本記事は、HTTP クライアントライブラリである [axios](https://github.com/axios/axios)の [v1.0.0](https://github.com/axios/axios/releases/tag/v1.0.0) が満を持してリリースされたため、何がどう変わったのか、マイグレーションしても良いのかについて個人的に調べてまとめた結果になります。
+本記事は、HTTP クライアントライブラリである [axios](https://github.com/axios/axios) の [v1.0.0](https://github.com/axios/axios/releases/tag/v1.0.0) が満を持してリリースされたため、何がどう変わったのか、マイグレーションしても良いのかについて個人的に調べてまとめた結果になります。
 
 # TL;DR
 
-- `axios` のモダン化に向けた節目としての `v1.0.0`
+- `axios` の `v1.0.0` は、パッケージのモダン化に向けた節目としてのバージョンともいえる
 - `v1.0.0` では多数のバグ修正と、いくつかの小規模の機能追加がまとめて取り込まれた
-- 破壊的変更は少なからずあるが、基本的な使い方や挙動を大きく変える規模の変更はない
+- 破壊的変更や非推奨化は少なからずあるが、基本的な使い方や挙動を大きく変える規模の変更はない
 - 公式マイグレーションガイドは記事執筆時点では提供されていない
 - 不具合報告(特に `TypeScript` への対応漏れ)が多く上がっているため、ご利用は慎重に
 
@@ -22,7 +22,9 @@ published: false
 
 [axios](https://github.com/axios/axios) は、`JavaScript` 向けの HTTP クライアントライブラリの一種で、この種のパッケージとしては比較的古くから普及している老舗ライブラリです。
 
-大きな特徴として、扱いが難しい [XMLHttpRequest](https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest) を `Promise` でラップして使いやすくした上、 `Node.js` で実行する場合は `fetch` API に切り替えることで、同じコードとブラウザでも `Node` でも動くようにしたことです。
+大きな特徴として、扱いが難しい [XMLHttpRequest](https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest) を `Promise` でラップして使いやすくした上、 `Node` で実行する場合は `fetch` API に切り替えることで、同じコードをブラウザでも `Node` でも動くようにしたことです。
+
+サンプルコード
 
 ```js
 axios.post('/user', {
@@ -37,26 +39,26 @@ axios.post('/user', {
   });
 ```
 
-またリクエスト・レスポンスを都度改変するための `Interceptors` や、リクエスト・レスポンスデータを加工するフックを挟む `Transform` などのヘルパー機能も多く搭載されています。
-
 # なぜ今になって `v1.0.0` なのか
 
-本パッケージは2016年という、`ES2015` で `Promise` が導入されてまもない頃にリリースされ、デファクトスタンダードに近い立ち位置を得たため、多くの方が一度は使ったことあるのではないでしょうか。
+本パッケージは2016年という、`ES2015` で `Promise` が導入されてまもない頃にリリースされ、デファクトスタンダードに近い立ち位置を得てきたため、多くの方が一度は使っている、今も使い続けていることでしょう。
 
-その割には今になっての `v1.0.0` なので、 **「axios って一生 v1.0.0 にならないのかと思ってた」** **「というかまだ 0.x 系だったの知らなかった」** という人もいると思います。
+その割には今になっての `v1.0.0` のリリースなので、 **「axios って一生 v1.0.0 にならないのかと思ってた」** **「というかまだ 0.x 系だったの知らなかった」** **「開発続いていたんだ」** と驚いた方もいるでしょう。
 
-以下 issue 及び discussions にて、今後 `axios` をどうしていきたいかが議論されており、モダン JavaScript のプラクティスに則ったライブラリを目指すための一環としての `v1.0.0` とされています。
+以下 issue 及び discussions では、今後 `axios` をどうしていきたいかが議論されており、モダン JavaScript のプラクティスに則ったライブラリを目指すための一環としての `v1.0.0` のリリースを行うことがわかります。
 
 https://github.com/axios/axios/issues/4209
 https://github.com/axios/axios/discussions/4477
 
-なお、モダン化というなら `XMLHttpRequest` に代わる [Fetch API](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API) に切り替えていくのかとも思いましたが、以下のようなスタンスを持っているようです。
+なお、モダン化というならブラウザでも `XMLHttpRequest` に代わる [Fetch API](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API) に切り替えていくのかとも思いましたが、それについては以下のようなスタンスを持っているようです。
 
 https://github.com/axios/axios/discussions/4477#discussioncomment-3091893
 
 > もし axios が Response と Request オブジェクトを使った fetch APIに移行したら、このプロジェクトの存在はかなり無意味になると思います。ユーザーは1つのリクエストに1つの Promise、そしてクロスプラットフォームが axios の最も重要な利点だと考えていますが、もしこれを実行すれば、文字通りインターセプターを持つ別のフェッチライブラリができてしまうことになります。そのようなプロジェクトはすでに存在しています。axiosは日々の仕事を楽にするために、ユーザーエクスペリエンスをシンプルにする独自の方法を見つけるべきでしょう。
 
-これに対して `XMLHttpRequest` を使い続けることに対しるデメリットも議論されていますが、`axios` ではレガシーブラウザ、や旧バージョンの `Node` の互換性を重視する姿勢のようです。
+これに対して `XMLHttpRequest` を使い続けることに対するデメリットも議論されていますが、`axios` ではレガシーブラウザや旧バージョンの `Node` への互換性を重視する姿勢のようです。
+
+事実、今回のリリースでも `IE11` のサポートを終了しませんでした。(一部機能が動かないという話はある)
 
 以上より、`axios` の `v1.0.0` 化はモダン化に向けた大きな一歩目である表明にはなるものの、積極的に後方互換を壊すような意図はないようです。
 
@@ -64,11 +66,13 @@ https://github.com/axios/axios/discussions/4477#discussioncomment-3091893
 
  # マイグレーションガイドについて
 
-前項で互換性はなるべく維持する方針であることはわかりましたが、それでも `v1.0.0` にはいくつかの破壊的変更を含みます。
+前項で互換性はなるべく維持する方針であることはわかりましたが、それでも `v1.0.0` にはいくつかの破壊的変更が含まれています。
 
 [リリースノート](https://github.com/axios/axios/releases/tag/v1.0.0)を見た限りは大きな影響はありませんが、以下 Discussions によると、これからマイグレーションガイドは用意されるそうです。
 
 https://github.com/axios/axios/discussions/4996
+
+*本記事では以降で主な変更点を紹介しますが、語弊・誤解がないように、ここが Breaking Changes だよとは明言しません。必要に応じてリリースノートをチェックしたり、マイグレーションガイドをお待ち下さい。*
 
 # 主な変更点
 
@@ -76,11 +80,11 @@ https://github.com/axios/axios/discussions/4996
 
 これらの変更は、記事執筆時点では[ドキュメントサイト](https://axios-http.com/docs/intro)には反映されていないためご注意ください。
 
-## AxiosError オブジェクトにスタックトレースが追加された
+## AxiosError オブジェクトへのスタックトレースの追加
 
 https://github.com/axios/axios/pull/4624
 
-エラー発生時にスタックトレースを AxiosError オブジェクトに追加する。
+エラー発生時にスタックトレースが `AxiosError` オブジェクトに追加されます。
 
 ```ts
 axios.get("/hoge").catch((e: AxiosError) => {
@@ -96,7 +100,8 @@ https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Er
 https://github.com/axios/axios/pull/4596
 
 ユーザーに直接影響はありませんが、ライブラリのビルドには [Webpack](https://webpack.js.org/) よりも [rollup](https://rollupjs.org/guide/en/) が適しているとのことです。
-事実、ビルド成果物のサイズが(minify後)2KB軽量化したそうです。
+
+事実、ビルド成果物のサイズが(minify後)2KB軽量化したと Issue には書かれています。
 
 とはいえ以下で調べてみると、 `0.27` から `1.0.0` でだいぶ増加してますが…。
 https://bundlephobia.com/package/axios@1.0.0
@@ -144,11 +149,11 @@ https://github.com/axios/axios/pull/4678
 axios.get("blob://hogehoge");
 ```
 
-いつ使うのこんなのと思う人もいるかも知れませんが、弊社は一度この不具合を踏んでハマったことがあります。
+いつ使うのこんなのと思われるかも知れませんが、弊社は一度この不具合を踏んでハマったことがあります。
 
 ## Web(XMLHttpRequest)で使用できるプロトコルに `data` を追加
 
-前項とだいたい同じ。
+前項とだいたい同じです。
 
 https://github.com/axios/axios/pull/4678
 
@@ -158,7 +163,7 @@ axios.get("data:image/gif;base64,hogehoge");
 
 ## Node で使用できるプロトコルに `data` を追加
 
-前項とだいたい同じ。
+前項とだいたい同じで、こちらは `Node` の話です。
 
 https://github.com/axios/axios/pull/4725
 
@@ -166,7 +171,7 @@ https://github.com/axios/axios/pull/4725
 axios.get("data:image/gif;base64,hogehoge");
 ```
 
-## toFormData へのオプション追加
+## `toFormData` 関数へのオプション追加
 
 https://github.com/axios/axios/pull/4704
 
@@ -305,19 +310,27 @@ Griffin
 `(post|put|patch)Form` メソッドは `v0.27.0` で追加されたショートカットメソッドで、`'Content-Type': 'multipart/form-data'` を自動で付与してくれます。
 本来は `'Content-Type': 'multipart/form-data'` の場合に自動でペイロードを変換する仕組みがありましたが、ヘッダーを明示的に `application/x-www-form-urlencoded` で上書きされた場合でも同様の変換処理が走るようになったようです。
 
+## その他
+
+ここで紹介した以外にも、いくつかの細かい修正が多く含まれています。
+
+特に、`TypeScript` の型情報の修正が多く、これまで `TypeScript` では使用できなかった機能がいくつか使えるようになりました。(本記事では型レベルのみの修正の紹介は割愛)
+
+ご興味がある方は[リリースノート](https://github.com/axios/axios/releases/tag/v1.0.0) にも目を向けてみてください。
+
 # 所感
 
 最後に、調査する中での私の所感が以下になります。
 
-- `axios` のような HTTPクライアントライブラリを深堀りすることで、Web や HTTP の学びを多く得られて良い
+- `axios` のような HTTPクライアントライブラリを深堀りすることで、Web や HTTP の学びを多く得られて良かった
 - 全体的に `TypeScript` の対応が弱いなと感じた
-  - `JavaScript` で実装され、型定義ファイル(`index.d.ts`)を別途作成する構成になっているので漏れが出やすいというのは仕方ない
-  - とはいえ現代で `JavaScript` では使えるけど `TypeScript` では使えないというのは厳しそうです。
+  - `JavaScript` で実装され、型定義ファイル(`index.d.ts`)を別途作成する構成になっているので、抜け漏れが出やすいというのは仕方ない
+  - とはいえ現代で `JavaScript` では使えるけど `TypeScript` では使えないというのは厳しそう
 - `FormData` を中心に、ペイロードの自動変換が強化された印象
   - 自動シリアライズや、シリアライズ用のヘルパー関数の提供あたりは嬉しいけど、どこまで HTTP クライアントライブラリの責務として扱うかは怪しい
   - `FormData` 自体を使う機会が最近は減ってきてる気もする
 - 現代ではだんだん必要性が薄れてくるパッケージなのかなと思ったけど、シンプルな `Promise` ベースのインタフェースで、ブラウザ/Node ともに動くという強みは残ってそう
-  - 今後は `Deno` や `Ban` で動くことも期待されて大変になるのかな
+  - 今後は `Deno` や `Ban` のような他のランタイムやライブラリで動くことも期待されそう
 - 歴史があってユーザー数が多い割にはメンテナ・コントリビュータが少ない
   - メンテナーは実質一人の状態
   - コントリビュータも限られているので、OSS 貢献のチャンスは眠ってる
