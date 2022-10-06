@@ -3,7 +3,7 @@ title: "axios は v1.0.0 でどう変わるのか"
 emoji: "👏"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "axios"]
-published: false
+published: true
 ---
 
 # 概要
