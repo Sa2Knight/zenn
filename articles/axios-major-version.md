@@ -22,7 +22,7 @@ published: true
 
 [axios](https://github.com/axios/axios) は、`JavaScript` 向けの HTTP クライアントライブラリの一種で、この種のパッケージとしては比較的古くから普及している老舗ライブラリです。
 
-大きな特徴として、扱いが難しい [XMLHttpRequest](https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest) を `Promise` でラップして使いやすくした上、 `Node` で実行する場合は `fetch` API に切り替えることで、同じコードをブラウザでも `Node` でも動くようにしたことです。
+大きな特徴として、扱いが難しい [XMLHttpRequest](https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest) を `Promise` でラップして使いやすくした上、 `Node` で実行する場合は `fetch` API に切り替えることで、同じコードをブラウザでも `Node` でも動くようにしたことがあげられます。
 
 サンプルコード
 
@@ -92,7 +92,7 @@ axios.get("/hoge").catch((e: AxiosError) => {
 });
 ```
 
-ただし、内部で利用されている `Error.captureStackTrace` は非標準機能であるため、環境によって挙動が変わることがある。
+ただし、内部で利用されている `Error.captureStackTrace` は非標準機能であるため、環境によって挙動が変わることがあります。
 https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Error#%E9%9D%99%E7%9A%84%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89
 
 ## ビルドツールを `webpack` から `rollup` に変更
