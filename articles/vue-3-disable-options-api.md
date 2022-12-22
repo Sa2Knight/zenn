@@ -8,13 +8,11 @@ published: false
 
 # 概要
 
-本記事では、Vue 3 で Option API を使用するためのフラグである `__VUE_OPTIONS_API__` を無効化した場合の挙動やバンドルサイズの違いについてまとめています。
+本記事では、Vue 3 で Options API を使用するためのフラグである `__VUE_OPTIONS_API__` を無効化した場合の挙動やバンドルサイズの違いについてまとめています。
 
 # TL;DR
 
-- Vue アプリケーションの **バンドルサイズを 5.49kB 削減** できた
-- gzip なら 2.14 kB の程度の削減
-- 最初から Composition API 1本と決めているプロジェクトなら無効化する価値はあるが、これのために既存コードを書き換えるほどでなさそう
+`Options API` を一切使わないプロジェクトなら、Vue アプリケーションの **バンドルサイズを 5.49kB 削減** できた (gzip なら 2.14 kB)
 
 # バージョン情報
 
@@ -25,7 +23,7 @@ published: false
 
 # Options API と Composition API
 
-Vue 3 のコンポーネントスタイルには、 `Options API` と `Compositions API` の2種類があります。
+Vue 3 のコンポーネントスタイルには、 `Options API` と `Composition API` の2種類があります。
 
 前者は Vue 2 時点での基本スタイルで、オブジェクトにコンポーネントの挙動を示す各フィールドを定義します。
 
@@ -214,3 +212,39 @@ $watch: i => (false ? instanceWatch.bind(i) : NOOP)
 https://github.com/vuejs/core/blob/fe77e2bddaa5930ad37a43fe8e6254ddb0f9c2d7/packages/shared/src/index.ts#L22
 
 そのため、機能フラグを無効化した状態で `Options API` を使用しても、空の関数が呼び出されるだけに書き換わるため、 `Uncaught TypeError` のようなコンソールエラーが発生しなかったというわけですね。
+
+# 機能フラグの注意点
+
+Vue プロジェクトにて `Options API` を一切使用していない場合、機能フラグを無効化することで無条件にバンドルサイズを削減することができたり、意図せず `Options API` を使用してしまうことを避けることができます。
+
+ドキュメントにも
+
+> it is strongly recommended to properly configure them in order to get proper tree-shaking in the final bundle.
+
+と書かれているため、積極的に利用しても良いと思われます。
+
+一方で、機能フラグを無効化した場合は、 **Options API を利用した外部コンポーネントが利用できない** という大きなデメリットがあります。
+
+例えば以下のパッケージは Vue 3 向けに作成したコンポーネントではありますが、Vue 2 版を簡易移植しただけなので `Options API` を利用して書かれています。
+
+https://github.com/s-sasaki-0529/vue-slider-component
+
+そのため、機能フラグを有効にしなければ上記パッケージは利用できないという、ライブラリ選定の足かせにもなります。
+
+とはいえ [Vuetify](https://github.com/vuetifyjs/vuetify) や [vee-validate](https://github.com/logaretm/vee-validate), [vue-chartjs](https://github.com/apertureless/vue-chartjs) といった主要ライブラリを見る限りは、 `Composition API` で書かれているものがほとんどのため、大きな問題はないかもしれません。
+
+コードの一例
+
+https://github.com/vuetifyjs/vuetify/blob/next/packages/vuetify/src/components/VCarousel/VCarousel.tsx
+https://github.com/logaretm/vee-validate/blob/main/packages/vee-validate/src/Field.ts
+https://github.com/apertureless/vue-chartjs/blob/main/src/chart.ts
+
+# まとめ + 所感
+
+本記事では、Vue 3 における機能フラグである `__VUE_OPTIONS_API__` の挙動について調査した結果をまとめました。
+
+結果として、劇的なバンドルサイズの削減とまでは言えませんでしたが、 `Options API` を使用しないプロジェクトであれば有用であると考えられます。
+
+一方で、外部ライブラリの選定の足かせになりえることや、バンドルサイズの削減幅が限られていることから、 `Options API` で書かれた既存のコードをリプレイスしてまで機能フラグを無効化する価値もなさそうでした。
+
+とはいえ、 `<script setup>` や [Reactivity Transform](https://vuejs.org/guide/extras/reactivity-transform.html) といった、`Composition API` をさらに強化するための仕組みが今後もどんどん追加されることを考えると、 `Composition API` をベースとした開発を行う方向に寄せるほうが良いのかなとも個人的に思っています。
