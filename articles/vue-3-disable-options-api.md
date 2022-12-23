@@ -3,16 +3,16 @@ title: "Vue 3 で Options API を無効化するという選択肢"
 emoji: "😊"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "vue"]
-published: false
+published: true
 ---
 
 # 概要
 
-本記事では、Vue 3 で Options API を使用するためのフラグである `__VUE_OPTIONS_API__` を無効化した場合の挙動やバンドルサイズの違いについてまとめています。
+本記事は、Vue 3 で Options API を使用するためのフラグである `__VUE_OPTIONS_API__` を無効化した場合の挙動やバンドルサイズの違いについてまとめになります。
 
 # TL;DR
 
-`Options API` を一切使わないプロジェクトなら、Vue アプリケーションの **バンドルサイズを 5.49kB 削減** できた (gzip なら 2.14 kB)
+`Options API` を一切使わないプロジェクトなら、Vue アプリケーションの **バンドルサイズを 5.49kB 削減** できました (gzip なら 2.14 kB)
 
 # バージョン情報
 
@@ -62,7 +62,7 @@ function increment() {
 }
 ```
 
-`Options API` と `Composition API` はコンポーネントによって使い分けても良いし、一つのコンポーネントで同時に使用することもできます。
+`Options API` と `Composition API` はコンポーネントによって使い分けることも、一つのコンポーネントで同時に使用することもできます。
 
 関連リンク
 
@@ -93,8 +93,8 @@ $ yarn install
 [`Vite`](https://ja.vitejs.dev/) は開発用サーバーではバンドラが作成されませんが、`Rollup` を用いたバンドルのビルドが可能なため、以下のように動作確認をします。
 
 ```bash
-$ yarn build
-$ yarn preview
+$ vite build
+$ vite preview
 ```
 
 リアクティブなカウンターが表示されるサンプルアプリケーションが起動しました。
@@ -112,7 +112,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [vue()],
   define: {
-    __VUE_OPTIONS_API__: true,
+    __VUE_OPTIONS_API__: true, // Options API を有効化 (デフォルト)
   },
 });
 ```
@@ -120,8 +120,6 @@ export default defineConfig({
 この状態でビルドをすると、バンドル(`dist/assets/index-f59c7c2f.js`) は 54.21kB であることがログからわかります。
 
 ```bash
-$ yarn build
-yarn run v1.22.19
 $ vite build
 vite v4.0.3 building for production...
 ✓ 16 modules transformed.
@@ -143,6 +141,16 @@ export default defineConfig({
 ```
 
 再度ビルドすると、バンドルサイズが 48.72 kB となり、 **5.49 kB 削減できた** ことがわかります。
+
+```bash
+$ vite build
+vite v4.0.3 building for production...
+✓ 16 modules transformed.
+dist/index.html                  0.45 kB
+dist/assets/vue-5532db34.svg     0.50 kB
+dist/assets/index-351bd726.css   1.29 kB │ gzip:  0.66 kB
+dist/assets/index-2809b276.js   48.72 kB │ gzip: 19.75 kB
+```
 
 # 機能フラグが無効の場合の挙動
 
@@ -175,7 +183,7 @@ export default {
 </script>
 ```
 
-この状態でも、機能フラグが有効な場合は動作しますが、無効にするとカウンターの部分が動作動作しなくなる(≒テンプレートにバインドされなくなる)ことがわかります。
+機能フラグが有効な場合は動作しますが、無効にするとカウンターの部分が動作動作しなくなる(≒テンプレートにバインドされなくなる)ことがわかります。
 
 ![](https://storage.googleapis.com/zenn-user-upload/19cb48d5701b-20221222.png)
 
@@ -245,6 +253,6 @@ https://github.com/apertureless/vue-chartjs/blob/main/src/chart.ts
 
 結果として、劇的なバンドルサイズの削減とまでは言えませんでしたが、 `Options API` を使用しないプロジェクトであれば有用であると考えられます。
 
-一方で、外部ライブラリの選定の足かせになりえることや、バンドルサイズの削減幅が限られていることから、 `Options API` で書かれた既存のコードをリプレイスしてまで機能フラグを無効化する価値もなさそうでした。
+一方で、外部ライブラリの選定の足かせになりえることや、バンドルサイズの削減幅も限られていることから、 `Options API` で書かれた既存のコードをリプレイスしてまで機能フラグを無効化する価値もなさそうでした。
 
 とはいえ、 `<script setup>` や [Reactivity Transform](https://vuejs.org/guide/extras/reactivity-transform.html) といった、`Composition API` をさらに強化するための仕組みが今後もどんどん追加されることを考えると、 `Composition API` をベースとした開発を行う方向に寄せるほうが良いのかなとも個人的に思っています。
