@@ -13,3 +13,4 @@ chapters:
   - create_sample_component
   - setup_storybook
   - create_main_js
+  - first_story
