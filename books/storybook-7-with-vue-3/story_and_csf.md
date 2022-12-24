@@ -22,7 +22,7 @@ export default meta;
 export const Default: Story = {
   render: () => ({
     components: { Counter },
-    template: '<Counter v-bind="args" />',
+    template: '<Counter />',
   }),
 };
 
