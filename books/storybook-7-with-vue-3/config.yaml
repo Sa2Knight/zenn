@@ -10,3 +10,4 @@ chapters:
   - what_is_storybook
   - setup_project
   - create_sample_component
+  - setup_storybook
