@@ -8,6 +8,7 @@ price: 0 # 有料の場合200〜5000
 chapters:
   - summary
   - what_is_storybook
+  - difference_from_v6
   - setup_project
   - create_sample_component
   - setup_storybook
