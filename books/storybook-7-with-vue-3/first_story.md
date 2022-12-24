@@ -36,7 +36,7 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 
 type Story = StoryObj<typeof Counter>;
 
-const meta = {
+const meta: Meta<typeof Counter> = {
   title: "Counter",
   component: Counter,
 };
