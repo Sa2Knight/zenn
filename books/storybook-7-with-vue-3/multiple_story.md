@@ -15,32 +15,107 @@ title: 複数のストーリーを定義する
 
 // 「ボタン」
 export const Default: Story = {
-  render: () => ({
+  render: (args) => ({
     components: { MyButton },
-    template: "<MyButton label='ボタン' />",
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
   }),
+  args: {
+    label: "ボタン",
+  },
 };
 
 // 「ログイン」
 export const Login: Story = {
-  render: () => ({
+  render: (args) => ({
     components: { MyButton },
-    template: "<MyButton label='ログイン' />",
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
   }),
+  args: {
+    label: "ログイン",
+  },
 };
 
 // 「会員登録」
 export const SignUp: Story = {
-  render: () => ({
+  render: (args) => ({
     components: { MyButton },
-    template: "<MyButton label='会員登録' />",
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
   }),
+  args: {
+    label: "会員登録",
+  },
 };
 ```
 
 `Storybook` を確認すると、以下のように `Login` `SignUp` の２種類のストーリーが追加されて、サイドバーからストーリーを切り替えられることがわかりました。
 
 ![](https://storage.googleapis.com/zenn-user-upload/eadc6f0b996e-20221225.gif)
+
+# Args
+
+ここで、ストーリーを複数定義するついでに、 `args` というフィールドが追加されました。
+
+前回の例では、 `props` の注入は `<MyButton label="ボタン" />` のように、 `template` にハードコードしていました。
+
+ハードコードでも動くには動きますが、通常は `args` という、`Vue` における `props` を `Storybook` から動的に注入できる仕組みを利用します。
+
+`args` は `render` 関数に引き渡されますが、これをテンプレートにバインドする必要があるため、 `Composition API` の仕組みに則り、`setup` 関数を使用してバインドしています。
+
+# ストーリーの共通部分を抜き出す
+
+ここで作成した各ストーリーは、 `MyButton` コンポーネントを描画し、 `args` をそのまま `props` に引き渡すことが共通しており、具体的な `args` の値のみが異なっています。
+
+各ストーリーで共通の設定については、`export default` しているメタ情報に一元化できます。 `render` 関数をそこに移動することで、以下のように整理できます。
+
+```ts:src/stories/MyButton.stories.ts
+import MyButton from "../components/MyButton.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+
+type Story = StoryObj<typeof MyButton>;
+
+const meta: Meta<typeof MyButton> = {
+  title: "MyButton",
+  component: MyButton,
+  render: (args) => ({
+    components: { MyButton },
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
+  }),
+};
+
+export default meta;
+
+export const Default: Story = {
+  args: {
+    label: "ボタン",
+  },
+};
+
+export const Login: Story = {
+  args: {
+    label: "ログイン",
+  },
+};
+
+export const SignUp: Story = {
+  args: {
+    label: "会員登録",
+  },
+};
+```
+
+個人的にはこれは頻出パターンで、さらに `args` についても共通設定を抜き出すことが多いです。本書でも以降はこの形式を使用することが多いので覚えておいてください。
 
 # 問題点
 

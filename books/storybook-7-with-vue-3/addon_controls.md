@@ -33,3 +33,161 @@ $ yarn storybook dev
 ```
 
 `Storybook` で　`With Initial Count` を開くと、画面下部のパネルに `Controls` タブが表示されるようになっています。
+
+`Controls` では `args` で設定した `props` を GUI 上で書き換えることができ、その変更がリアクティブに反映されます。
+
+![](https://storage.googleapis.com/zenn-user-upload/689503931bf5-20221226.gif)
+
+# Controls addon の原理を知る
+
+先程の例で、`args` で設定された `label` を動的に書き換えられることがわかりました。
+
+よく見ると、 `label` 以外に `variant` や `size` といった、他の `props` についても変更できるようになっています。 `args` で指定していないのに、`Storybook` はどうやって他の `props` を認識しているのでしょうか。
+
+その答えは、 `@storybook/vue3-vite` が使用している、`vue-docgen-api` というパッケージにあります。
+
+https://github.com/vue-styleguidist/vue-styleguidist/tree/dev/packages/vue-docgen-api
+
+このパッケージは Vue コンポーネントから、 `props` などのインタフェース情報を抽出する機能を持っています。 `@storybook/vue3-vite` では `Vite` でのビルド時にインタフェース情報をオブジェクトに追加する処理を行うことで、`Storybook` にそれを伝えています。
+
+https://github.com/storybookjs/storybook/blob/ca358694c34c61283da1c685078f104773e0d4e2/code/frameworks/vue3-vite/src/preset.ts#L20
+
+試しに、`MyButton.stories.ts` 内で以下のログ出力をしてみましょう。
+
+```ts
+console.log(JSON.stringify(MyButton.__docgenInfo, null, 2));
+```
+
+ストーリーを開くと以下のようなログが確認できます。
+
+```json
+{
+  "exportName": "default",
+  "displayName": "MyButton",
+  "description": "",
+  "tags": {},
+  "props": [
+    {
+      "name": "label",
+      "type": {
+        "name": "string"
+      },
+      "required": true
+    },
+    {
+      "name": "variant",
+      "type": {
+        "name": "string"
+      },
+      "defaultValue": {
+        "func": false,
+        "value": "\"primary\""
+      }
+    },
+    {
+      "name": "size",
+      "type": {
+        "name": "string"
+      },
+      "defaultValue": {
+        "func": false,
+        "value": "\"medium\""
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "onClick"
+    }
+  ]
+  ```
+
+# props の型を定義する
+
+`MyButton` コンポーネントの `props` には、 `label` のほかに、`variant` `size` があります。
+
+ストーリーを一つにまとめつつ、これらの `props` についても書き換えられるようにしましょう。
+
+```ts:src/stories/MyButton.ts
+// 前略
+
+export const Default: Story = {
+  args: {
+    label: "ボタン",
+    variant: "primary",
+    size: "medium",
+  },
+};
+```
+
+`variant` `size` についても、 `Controls` タブから値を書き換えることで、スタイルの変更を反映させることができました。
+
+![](https://storage.googleapis.com/zenn-user-upload/00d32263d9c9-20221226.gif)
+
+しかし、 `variant` `size` の型は `String` であるものの、実際はそれぞれ特定の文字列しか受け付けません。 (`variant` の場合は `primary` or `secondary`)
+
+上記 gif でも、入力途中の状態では壊れたスタイルになってしまう上、そもそも何を受け付けているかが不明です。
+
+こういった問題を解決するため、 `Storybook` では入力を制限するための以下のコントロール UI が提供されています。
+
+- 真偽値
+- 数値
+- JSON
+- ラジオボタン
+- チェックボックス
+- セレクトボックス
+- テキストボックス
+- マルチラインテキストボックス
+- カラーピッカー
+- カレンダー
+
+例として、`variant` にはラジオボタンを、 `size` にはセレクトボックスを使用してみます。
+
+`args` ごとにどのコントロール UI を使用するかを設定するために、メタデータオブジェクトに `argTypes` を追加します。
+
+```ts:src/stories/MyButton.ts
+// 前略
+
+const meta: Meta<typeof MyButton> = {
+  title: "MyButton",
+  component: MyButton,
+  render: (args) => ({
+    components: { MyButton },
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
+  }),
+  // ここを追加
+  argTypes: {
+    variant: {
+      control: {
+        type: "inline-radio",
+      },
+      options: ["primary", "secondary"],
+    },
+    size: {
+      control: {
+        type: "select",
+      },
+      options: ["small", "medium", "large"],
+    },
+  },
+};
+
+// 以下略
+```
+
+ラジオボタンやセレクトボックスで切り替えができるようになりました。
+
+![](https://storage.googleapis.com/zenn-user-upload/6e73ba32edc2-20221226.gif)
+
+:::message
+Vue 3 には、型レベルで `props` を定義する手段があります。ただし `vue-docgen-api` が値レベルでインタフェースを取得する都合、このような二度手間が必要になるようです。
+(もしかすると `vue-docgen-api` のアップデートで解決している可能性があります)
+:::
+
+このあたりは手動でやる必要が出てくるので、やや億劫ではありますが、 props が取りうる値をより具体化することで、ドキュメントとしての実用性を高めることができます。
+
+ここではラジオボタンをセレクトボックスを使用しましたが、その他のコントロール UI については以下を参照ください。
+https://storybook.js.org/docs/7.0/vue/essentials/controls#annotation
