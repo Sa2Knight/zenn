@@ -2,30 +2,29 @@
 title: 「ストーリー」と CSF
 ---
 
-前章にて、`Counter.stories.ts` という、`Storybook` で読み込むためのファイルを作成しました。
+前章にて、`MyButton.stories.ts` という、`Storybook` で読み込むためのファイルを作成しました。
 
 `.stories.js` のようなファイル形式を **CSF (Component Story Format)** と呼びます。以下は前章で作成した、`CSF` で書かれたストーリーファイルです。
 
-```ts:src/stories/Counter.stories.ts
-import Counter from "../components/Counter.vue";
+```ts:src/stories/MyButton.stories.ts
+import MyButton from "../components/MyButton.vue";
 import type { Meta, StoryObj } from "@storybook/vue3";
 
-type Story = StoryObj<typeof Counter>;
+type Story = StoryObj<typeof MyButton>;
 
-const meta: Meta<typeof Counter> = {
-  title: "Counter",
-  component: Counter,
+const meta: Meta<typeof MyButton> = {
+  title: "MyButton",
+  component: MyButton,
 };
 
 export default meta;
 
 export const Default: Story = {
   render: () => ({
-    components: { Counter },
-    template: '<Counter />',
+    components: { MyButton },
+    template: "<MyButton label='ボタン' />",
   }),
 };
-
 ```
 
 `Storybook` における「ストーリー」とは、コンポーネントを `Storybook` 上で描画する最小単位であり、指定されたレンダリング方法に基づいてコンポーネントをレンダリングします。

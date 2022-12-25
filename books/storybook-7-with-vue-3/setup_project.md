@@ -28,4 +28,35 @@ http://127.0.0.1:5173/ にアクセスし、以下のようなサンプルアプ
 
 ![](https://storage.googleapis.com/zenn-user-upload/6ffeab321c8e-20221224.png)
 
-なお、以降は `Storybook` のみ使用するため、 `yarn dev` による開発サーバーを起動するのはこれが最初で最後です。上記画面が確認できたら終了して構いません。
+# `vscode` / `Volar` を使用している場合
+
+開発環境として [`vscode`](https://code.visualstudio.com/) 及び [`Volar`](https://github.com/johnsoncodehk/volar) を使用している場合は、 `tsconfig.json` を以下のように修正してください。
+
+```json:tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    // ここを追加する
+    "types": [
+      "vite/client"
+    ]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+}
+```
+
+本書の本筋とは関係ないので詳細は割愛しますが、 `Storybook` を使用する場合はテンプレートの正しい型チェックのため必要になります。
+
+https://github.com/johnsoncodehk/volar/discussions/592

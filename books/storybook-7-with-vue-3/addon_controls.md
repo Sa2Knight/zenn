@@ -33,7 +33,3 @@ $ yarn storybook dev
 ```
 
 `Storybook` で　`With Initial Count` を開くと、画面下部のパネルに `Controls` タブが表示されるようになっています。
-
-![](https://storage.googleapis.com/zenn-user-upload/2323a33dd6dc-20221225.gif)
-
-`Controls` タブでは、 ストーリーの `args` フィールドで設定した `props` を画面から切り替えて変更を反映できます。

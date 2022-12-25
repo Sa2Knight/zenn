@@ -4,53 +4,50 @@ title: 複数のストーリーを定義する
 
 前章にて、`CSF` では `export const` を使用して、一つのコンポーネントに対して複数のストーリーを定義できることがわかりました。
 
-実際に `Counter` コンポーネントのストーリーを複数作成してみましょう。
+実際に `MyPage` コンポーネントのストーリーを複数作成してみましょう。
 
-# With Initial Count ストーリー
+# ストーリーの追加
 
-`Counter` コンポーネントは、`initialCount` という `props` でカウンターの初期値が決定します。これを指定した場合と、省略した場合での挙動を確認できるようにしましょう。
+`MyPage` コンポーネントは、`label` に文字列を指定することで、ボタンのテキストを変更できます。現状の "ボタン" 以外にも、他のテキストを使ったストーリーを用意してみましょう。
 
 ```ts:src/stories/counter.stories.ts
 // ...前略
 
-// 初期値を指定しないパターンのストーリー
+// 「ボタン」
 export const Default: Story = {
   render: () => ({
-    components: { Counter },
-    template: "<Counter />",
+    components: { MyButton },
+    template: "<MyButton label='ボタン' />",
   }),
 };
 
-// 初期値を指定したパターンのストーリー
-export const WithInitialCount: Story = {
-  render: (args) => ({
-    components: { Counter },
-    setup() {
-      return { args };
-    },
-    template: '<Counter v-bind="args" />',
+// 「ログイン」
+export const Login: Story = {
+  render: () => ({
+    components: { MyButton },
+    template: "<MyButton label='ログイン' />",
   }),
-  args: {
-    initialCount: 5,
-  },
 };
 
+// 「会員登録」
+export const SignUp: Story = {
+  render: () => ({
+    components: { MyButton },
+    template: "<MyButton label='会員登録' />",
+  }),
+};
 ```
 
-`Storybook` を確認すると、以下のように `With Initial Count` というストーリーが追加され、カウンターの初期値が設定された状態でレンダリングされます。
+`Storybook` を確認すると、以下のように `Login` `SignUp` の２種類のストーリーが追加されて、サイドバーからストーリーを切り替えられることがわかりました。
 
-![](https://storage.googleapis.com/zenn-user-upload/428ab15c74ff-20221225.png)
-
-# Args
-
-追加したストーリーでは、新たに `args` というフィールドを指定しました。これは `Vue` における `props` であると解釈してください。コンポーネントをレンダリングする際は通常、親コンポーネントから `props` が渡されますが、 `args` フィールドがその役割担います。
-
-`args` は `render` 関数に渡されるので、あとは `composition API` の仕組みを使って `setup` 関数経由でテンプレートにバインドしています。
+![](https://storage.googleapis.com/zenn-user-upload/eadc6f0b996e-20221225.gif)
 
 # 問題点
 
-`With Initial Count` というストーリーを追加することで、`initialCount` が `5` である場合の挙動を確認できました。
+`Login` `SignUp` というストーリーを追加することで、`label` が異なる場合の挙動を確認できました。
 
-しかし、 `initialCount` を `-1` にした場合、 `1000` にした場合はどのような挙動になるでしょうか。現状だとソースコードを都度書き換えるしかなく、メンバー同士での共有、カタログ化には不向きです。
+しかし、 `label` を空にした場合や、長文にした場合はどうなるでしょうか。また、`MyButton` コンポーネントには他にも `variant` `size` といった `props` が存在します。
+
+現状だとそれらを確認するためにはソースコードを都度書き換えるしかなく、メンバー同士での共有、カタログ化には不向きです。
 
 これを解決する、非常に強力な仕組みがアドオンで提供されています。まずは `Storybook` におけるアドオンについて確認しましょう。

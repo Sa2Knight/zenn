@@ -13,20 +13,20 @@ title: CSF の書き方
 - **`export default` で、ストーリーで描画するコンポーネントのメタデータを定義する**
 - **`export const` (named export) で、ストーリーを定義する**
 
-`Counter.stories.ts` を例に順に見ていきます。
+`MyButton.stories.ts` を例に順に見ていきます。
 
 ## export default
 
 ```ts
 const meta: Meta<typeof Counter> = {
-  title: "Counter",
-  component: Counter,
+  title: "MyButton",
+  component: MyButton,
 };
 
 export default meta;
 ```
 
-変数 `meta` は、 `Counter` コンポーネントのストーリーに関するメタデータを定義しています。
+変数 `meta` は、 `MyButton` コンポーネントのストーリーに関するメタデータを定義しています。
 
 `title` はコンポーネント名を、 `component` は対象コンポーネントそのものを指定し、それを `default export` します。
 
@@ -36,13 +36,13 @@ export default meta;
 
 ## export const (named export)
 
-変数 `Default` は、`Counter` コンポーネントを描画するストーリーです。
+変数 `Default` は、`MyButton` コンポーネントを描画するストーリーです。
 
 ```ts
 export const Default: Story = {
   render: () => ({
-    components: { Counter },
-    template: '<Counter />',
+    components: { MyButton },
+    template: "<MyButton label='ボタン' />",
   }),
 };
 ```
@@ -52,33 +52,9 @@ export const Default: Story = {
 また `export const` は複数宣言できることから、一つのコンポーネントに対して複数のストーリーを定義することも出来ます。詳細は次章に譲りますが、特定の状態を持ったパターン別にストーリーを定義するやり方が主流です。
 
 :::message
-ストーリー名は変数名から機械的に決定します。あえて別名を付けたい場合、`name` フィールドを設定することができます。
+ストーリー名は変数名から機械的に決定します。あえて別名を付けたい場合、`name` フィールドを設定できます。
 :::
 
 :::message
 `export const` したすべてのオブジェクトがデフォルトではストーリーとして扱われます。モックデータなど、ストーリー以外を export したい場合は、その旨を `export default` するメタデータの方で定義することが出来ます。
 :::
-
-# 省略記法
-
-今回の `counter.stories.ts` の場合、以下の設定が冗長です。
-
-- コンポーネントのタイトルがファイル名と同一である
-- 対象コンポーネントをそのままレンダリングするだけ
-
-この場合、 `CSF 3` では以下のように省略可能で、 `Storybook` をシンプルに運用する場合は、多くのストーリーがこれだけで充分です。
-
-```ts
-import Counter from "../components/Counter.vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
-
-type Story = StoryObj<typeof Counter>;
-
-const meta: Meta<typeof Counter> = {
-  component: Counter, // title はファイル名から決定する
-};
-
-export default meta;
-
-export const Default: Story = {}; // 対象コンポーネントを描画する
-```
