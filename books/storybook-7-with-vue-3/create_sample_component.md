@@ -34,7 +34,7 @@ title: サンプルアプリケーションの作成
 |variant|String|ボタンのスタイル種別で、"primary" "secondary" から指定する|
 |size|String|ボタンのサイズで、"large" "medium" "small" から指定する|
 
-また、ボタンをクリックすることで `onClick` イベントが emit されます。
+また、ボタンをクリックすることで `click` イベントが emit されます。
 
 ```vue:src/components/MyButton.vue
 <script setup lang="ts">
@@ -59,11 +59,11 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["onClick"]);
+const emits = defineEmits(["click"]);
 </script>
 
 <template>
-  <button @click="emits('onClick')" :class="[props.variant, props.size]">
+  <button @click="emits('click')" :class="[props.variant, props.size]">
     {{ props.label }}
   </button>
 </template>
@@ -117,7 +117,7 @@ button.small {
 - 未ログインの場合:「ログイン」「会員登録」ボタンを表示
 - ログイン済みの場合:「ログアウト」ボタンを表示
 
-それぞれのボタンが押下されると、 `onLogin` `onSignUp` `onLogout` のイベントが発火されます。
+それぞれのボタンが押下されると、 `login` `signUp` `logout` のイベントが発火されます。
 
 また、ウィンドウサイズが一定より小さい場合は各種ボタンが非表示になります。(モバイルならハンバーガーメニューが出るイメージ)
 
@@ -132,7 +132,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["onLogin", "onSignUp", "onLogout"]);
+const emits = defineEmits(["login", "signUp", "logout"]);
 </script>
 
 <template>
@@ -143,12 +143,12 @@ const emits = defineEmits(["onLogin", "onSignUp", "onLogout"]);
         <MyButton
           size="small"
           label="ログアウト"
-          @onClick="$emit('onLogout', props.user)"
+          @click="$emit('logout')"
         />
       </template>
       <template v-else>
-        <MyButton size="small" label="ログイン" @onClick="$emit('onLogin')" />
-        <MyButton size="small" label="会員登録" @onClick="$emit('onSignUp')" />
+        <MyButton size="small" label="ログイン" @click="$emit('login')" />
+        <MyButton size="small" label="会員登録" @click="$emit('signUp')" />
       </template>
     </div>
   </header>
@@ -214,9 +214,9 @@ function signUp() {
   <div>
     <MyHeader
       :user="user"
-      @onLogin="login"
-      @onLogout="logout"
-      @onSignUp="signUp"
+      @login="login"
+      @logout="logout"
+      @signUp="signUp"
     />
     <main>
       <div class="content-wrapper">

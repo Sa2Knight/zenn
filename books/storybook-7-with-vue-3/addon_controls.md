@@ -97,7 +97,7 @@ console.log(JSON.stringify(MyButton.__docgenInfo, null, 2));
   ],
   "events": [
     {
-      "name": "onClick"
+      "name": "click"
     }
   ]
   ```
@@ -183,11 +183,13 @@ const meta: Meta<typeof MyButton> = {
 ![](https://storage.googleapis.com/zenn-user-upload/6e73ba32edc2-20221226.gif)
 
 :::message
-Vue 3 には、型レベルで `props` を定義する手段があります。ただし `vue-docgen-api` が値レベルでインタフェースを取得する都合、このような二度手間が必要になるようです。
-(もしかすると `vue-docgen-api` のアップデートで解決している可能性があります)
+Vue 3 には、型レベルで `props` を定義する手段があります。ただし `vue-docgen-api` がインタフェースを取得する際にユニオン型の内容まで取り出せていないため、このような二度手間が必要になるようです。(`vue-docgen-api` のアップデートで解決している可能性があります)
 :::
 
 このあたりは手動でやる必要が出てくるので、やや億劫ではありますが、 props が取りうる値をより具体化することで、ドキュメントとしての実用性を高めることができます。
 
-ここではラジオボタンをセレクトボックスを使用しましたが、その他のコントロール UI については以下を参照ください。
-https://storybook.js.org/docs/7.0/vue/essentials/controls#annotation
+ここではラジオボタンをセレクトボックスを使用しましたが、その他のコントロール UI については関連リンクを参照してください。
+
+# 関連リンク
+
+https://storybook.js.org/docs/7.0/vue/essentials/controls

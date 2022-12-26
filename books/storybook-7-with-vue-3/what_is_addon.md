@@ -34,3 +34,8 @@ https://storybook.js.org/integrations
 `Essential addons` はプリセットであるため、 `@storybook/addon-essentials` をインストールするだけですべてのアドオンがインストール、セットアップされます。
 
 しかし、必須アドオンと言いつつも実際は使わないアドオンが含まれていることも多いため、本書では必要に応じて個別にアドオンをインストール、設定する方式で進めていきます。
+
+# 関連リンク
+
+https://storybook.js.org/docs/7.0/vue/addons/introduction
+https://storybook.js.org/docs/7.0/vue/essentials/introduction

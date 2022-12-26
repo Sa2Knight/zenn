@@ -58,3 +58,7 @@ export const Default: Story = {
 :::message
 `export const` したすべてのオブジェクトがデフォルトではストーリーとして扱われます。モックデータなど、ストーリー以外を export したい場合は、その旨を `export default` するメタデータの方で定義することが出来ます。
 :::
+
+# 関連リンク
+
+https://storybook.js.org/docs/7.0/vue/api/csf
