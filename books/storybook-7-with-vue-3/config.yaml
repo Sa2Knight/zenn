@@ -24,3 +24,5 @@ chapters:
   - addon_background
   - addon_measure_outline
   - addon_docs
+  - preview_js
+  - decorators
