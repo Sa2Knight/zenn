@@ -1,5 +1,6 @@
 ---
 title: Storybook のセットアップ
+free: true
 ---
 
 いよいよ、`Storybook` のセットアップに入ります。

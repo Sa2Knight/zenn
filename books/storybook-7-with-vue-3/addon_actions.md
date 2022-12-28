@@ -1,5 +1,6 @@
 ---
 title: emit をロギングする
+free: true
 ---
 
 # Actions Addon について

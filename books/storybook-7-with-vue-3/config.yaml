@@ -3,8 +3,7 @@ summary: |-
   想定読者や使い方などについては「はじめに」の章をご覧ください。
 topics: ["javascript", "vue", "vite", "storybook"]
 published: false
-price: 0 # 有料の場合200〜5000
-# 本に含めるチャプターを順番に並べましょう
+price: 500
 chapters:
   - summary
   - what_is_storybook
@@ -27,3 +26,4 @@ chapters:
   - preview_js
   - decorators
   - play_function
+  - publish_storybook

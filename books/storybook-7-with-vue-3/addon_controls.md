@@ -1,5 +1,6 @@
 ---
 title: props を動的に切り替える
+free: true
 ---
 
 # Controls Addon について

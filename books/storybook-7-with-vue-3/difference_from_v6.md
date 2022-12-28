@@ -1,5 +1,6 @@
 ---
 title: Storybook 6 との違い
+free: true
 ---
 
 `Storybook 7` は、 `Storybook 6` の後継にして、過去最大級のアップデートになります。

@@ -1,5 +1,6 @@
 ---
 title: ストーリーをラップする
+free: true
 ---
 
 # Decorator について

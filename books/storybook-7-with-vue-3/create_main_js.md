@@ -1,5 +1,6 @@
 ---
 title: 設定ファイルの作成
+free: true
 ---
 
 `storybook` では、 `.storybook` ディレクトリにベースとなる設定ファイルを配置する必要があります。

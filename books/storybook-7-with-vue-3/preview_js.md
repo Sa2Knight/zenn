@@ -1,5 +1,6 @@
 ---
 title: 全ストーリー共通設定を定義する
+free: true
 ---
 
 # preview.js について

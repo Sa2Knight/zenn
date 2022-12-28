@@ -1,5 +1,6 @@
 ---
 title: "プロジェクト作成"
+free: true
 ---
 
 本書では `vue 3` + `TypeScript` のプロジェクトを、 `vite` を用いて動かします。

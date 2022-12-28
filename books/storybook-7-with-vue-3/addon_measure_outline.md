@@ -1,8 +1,9 @@
 ---
 title: CSS レイアウトをデバッグしやすくする
+free: true
 ---
 
-ここでは以下の 残りの `essentials addons` である、 `Measure addon` と `Outline addon` についてまとめて紹介します。
+ここでは残りの `essentials addons` である、 `Measure addon` と `Outline addon` についてまとめて紹介します。
 
 これらについては百聞は一見に如かずであるため、さっそくインストールしましょう。
 

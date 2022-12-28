@@ -1,5 +1,6 @@
 ---
 title: 背景色を変更する
+free: true
 ---
 
 `Backgrounds addon` は、`essentials addons` の一つで、 **コンポーネントを描画する際の画面の背景色を変更する** アドオンです。

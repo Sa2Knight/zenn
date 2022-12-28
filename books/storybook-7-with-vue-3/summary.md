@@ -1,5 +1,6 @@
 ---
 title: "はじめに"
+free: true
 ---
 
 本書は [Storybook](https://storybook.js.org/) を用いて、[Vue.js](https://jp.vuejs.org/index.html), [TypeScript](https://www.typescriptlang.org/), [Vite](https://ja.vitejs.dev/) の技術スタックにおける Web アプリケーションのコンポーネントカタログ化を行うためのハンズオンとなっています。

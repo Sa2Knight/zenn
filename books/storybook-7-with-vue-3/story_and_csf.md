@@ -1,5 +1,6 @@
 ---
 title: 「ストーリー」と CSF
+free: true
 ---
 
 前章にて、`MyButton.stories.ts` という、`Storybook` で読み込むためのファイルを作成しました。

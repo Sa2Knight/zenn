@@ -1,5 +1,6 @@
 ---
 title: ドキュメントを生成する
+free: true
 ---
 
 # Docs addon について

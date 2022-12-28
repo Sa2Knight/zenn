@@ -1,5 +1,6 @@
 ---
 title: ビューポートを変更する
+free: true
 ---
 
 # Viewport Addon について
