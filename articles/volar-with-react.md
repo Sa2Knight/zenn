@@ -1,14 +1,14 @@
 ---
-title: "Volar (Vue 3 + TypeScript) に @types/react が混ざると型エラーになる"
+title: "Volar (Vue 3 + TypeScript) に @types/react が混ざると型エラーになる現象と回避策"
 emoji: "🤖"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "typescript", "vue", "storybook"]
-published: false
+published: true
 ---
 
 # 概要
 
-本記事は、[Volar](https://github.com/johnsoncodehk/volar) を使って型安全に [Vue 3](https://vuejs.org/) + [TypeScript](https://www.typescriptlang.org/) を書いていたら急に型エラーが発生した問題の調査記録になります。
+本記事は、[Volar](https://github.com/johnsoncodehk/volar) を使って型安全に [Vue 3](https://vuejs.org/) + [TypeScript](https://www.typescriptlang.org/) を書いていたら**急に以下の型エラーが発生した**問題の調査記録になります。
 
 > Type '{ class: string; }' is not assignable to type 'DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>'.
 > Object literal may only specify known properties, and 'class' does not exist in type 'DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>'.
@@ -17,15 +17,15 @@ published: false
 
 結論から言うと、以下ディスカッションの内容の通りです。
 
-JSX issues in template
+**JSX issues in template**
 https://github.com/johnsoncodehk/volar/discussions/592
 
 - `Volar` は `Vue` コンポーネントの型チェックに `JSX` を使用している
 - 本来は `@vue/runtime-dom` に定義されている型を利用している
-- `@types/react` が依存関係に入ると、 `JSX` が `React` 用ので上書きされてしまう
-- `React` の `JSX` には `class` がなく `className` で置き換えられているため、 `Vue` と互換性がなく型エラーになる
+- `@types/react` が依存関係に入ると、 `JSX` ネームスペースが `React` 用ので上書きされてしまう
+- `React` の `JSX` 定義には `class` がなく `className` で置き換えられているため、 `Vue` と互換性がなく型エラーになる
 
-`tsconfig.json` の `compilerOptions.type` フィールドを明示することで多くの場合は解決できる。
+この問題は大抵の場合、`tsconfig.json` の `compilerOptions.type` フィールドを明示することで解決できます。
 
 と、これで記事が終わっても良いんですが、意外とハマりやすそうなポイントなのに日本語の情報は無いなと思ったので、整理してまとめることにしました。
 
@@ -33,9 +33,9 @@ https://github.com/johnsoncodehk/volar/discussions/592
 
 `Volar` は、`vscode` 拡張を中心とした `Vue.js` 向けのツールセットです。主に `.vue` ファイル向けの言語サーバーの提供や型チェック機能を含んでおり、 `Vue 3` + `TypeScript` で開発する上では実質必須のツールです。
 
-「`Vue` は `TypeScript` との相性が悪い」「`Vue` は型安全性が低い」というイメージも今は昔。`Volar` の力もあり、現代の `Vue` は完全に型安全で使うことができます。
+「`Vue` は `TypeScript` との相性が悪い」「`Vue` は型安全性が低い」というイメージも今は昔。`Volar` の力もあり、現代の `Vue` は完全に型安全で使えるようになりました。
 
-しかし、今回意図せず `<template>` 内の `<div class="card">` というシンプルなテンプレートで型エラーが発生するようになりました。
+しかし、今回意図せず `<template>` 内の **`<div class="card">`** というシンプルなテンプレートで **div に class なんてフィールドないぞ** というエラーが発生しました。
 
 # 状況再現
 
@@ -56,7 +56,7 @@ $ yarn install
 }
 ```
 
-`HelloWorld.vue` が用意されているので、確認すると、テンプレートまですべて型安全に扱える状態で、型チェックが通っていることが確認できます。
+`HelloWorld.vue` が用意されているので確認すると、テンプレートまですべて型安全に扱える状態で、型チェックが通っていることが確認できます。
 
 ![](https://storage.googleapis.com/zenn-user-upload/671c0400b56a-20221227.png)
 
@@ -139,13 +139,13 @@ https://www.typescriptlang.org/tsconfig#types
 
 それを上記のように、明示的に指定することで、それだけを読み込むように変更でき、`@types/react` が勝手に読み込まれなくなります。
 
-この方法は、 `@types/react` を読み込んでいるコードがプロジェクトに存在しない場合のみ有効です。 (依存パッケージの中で、使われてないけど依存している場合など)
+この方法は、 `@types/react` を読み込んでいるコードがプロジェクトに存在しない場合のみ有効です。 (`node_modules` 以下にあるけど使われてはいない場合)
 
 ## `@types/react` を読み込んでいるモジュールを型チェックしない
 
-特に `Storybook` で発生することが多いようです。
+本事象は、特に `Storybook` で発生することが多いようです。
 
-最近だと `Storybook 7.0.0-beta.14` では、アドオン経由で `@types/react` が入ってきてしまいます。
+最近の例だと `Storybook 7.0.0-beta.14` では、アドオン経由で `@types/react` が入ってきてしまいました。
 
 ```bash
 $ yarn why @types/react
@@ -157,13 +157,19 @@ info Reasons this module exists
    - Hoisted from "@storybook#addon-essentials#@storybook#addon-docs#@mdx-js#react#@types#react"
 ```
 
-この場合、前述の `tsconfig.json` の対応をしていても、以下のようなコードが出現したら終わりです。読み込んだモジュール経由で `@types/react` が読み込まれてエラーが再発します。
+:::message
+`@storybook#addon-essentials` は `Storybook` を導入すると実質セットで導入することになるパッケージです
+:::
+
+この場合、前述の `tsconfig.json` の対応をしていても、プロジェクト内に以下のようなコードが出現したら終わりです。
 
 ```ts
 import { ArgsTable } from "@storybook/addon-docs";
 ```
 
-ディスカッションでは、 `tsconfig.json` の　`exclude` オプションを使用することが提案されています。
+読み込んだモジュール経由で `@types/react` が読み込まれてエラーが再発してしまいます。
+
+この問題に対して、ディスカッションでは、 `tsconfig.json` の　`exclude` オプションを使用することが提案されています。
 
 今回の場合は `Storybook` 用のコードなので、 `*.stories.ts` を型チェックの対象外にします。
 
@@ -176,7 +182,7 @@ import { ArgsTable } from "@storybook/addon-docs";
 
 これで型チェック時に `@storybook/addon-docs` から対象外になるため、`@types/react` が読み込まれなくなり、エラーが解消します。
 
-とはいえ、これをしてしまうと `Storybook` のコードに型チェックがかけられなくなるので、本末転倒でもあります。
+**とはいえ、これをしてしまうと `Storybook` のコードに型チェックがかけられなくなるので、本末転倒でもあります。**
 
 ## `@types/react` を改変する
 
@@ -192,9 +198,9 @@ import { ArgsTable } from "@storybook/addon-docs";
 
 `package.json` の `resolutions` では、依存ツリー内に含まれる任意のパッケージの解決方法を強引に指定できます。
 
-そしてパッケージの解決は `npm` に公開されているものでなく、ファイルシステムから直接指定することも出来ます。
+そしてパッケージの解決は `npm` に公開されているものでなく、ファイルシステムから直接参照することも出来ます。
 
-よって、 `stub/types__react` に、何も定義しない空パッケージを作成することで、`JSX` ネームスペースが上書きされないようになります。
+よって、 `stub/types__react` に、何も定義しない空パッケージを作成することで、`JSX` ネームスペースが上書きされないようにできます。
 
 空パッケージの内容は以下のとおりです。
 
@@ -213,6 +219,6 @@ export {}
 
 # まとめ
 
-本記事は、[Volar](https://github.com/johnsoncodehk/volar) を使ってるのにテンプレートで型エラーが発生する問題の深堀りをしました。
+本記事では、[Volar](https://github.com/johnsoncodehk/volar) を使ってるのにテンプレートで型エラーが発生する問題の深堀りをしました。
 
 意外な落とし穴で、そこまでハマる機会はありませんが、あえて深堀りすることで OSS コードリーディングや TypeScript の理解を深める良い機会になりました。
