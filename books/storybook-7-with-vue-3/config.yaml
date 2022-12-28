@@ -26,4 +26,4 @@ chapters:
   - preview_js
   - decorators
   - play_function
-  - publish_storybook
+  - test-runner

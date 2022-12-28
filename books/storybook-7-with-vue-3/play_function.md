@@ -245,3 +245,7 @@ export const Error: Story = {
 このように `Play function` を使用することで、**実際に操作しないと再現できないコンポーネントの状態**を `Storybook` 上で用意に作成できます。
 
 この仕組みは自動テストとの相性が抜群です。以降の章では、作成したストーリーを `Storybook` で確認するだけでなく、自動テストと統合して振る舞いが変わらないことを担保する方法も紹介します。
+
+# 関連リンク
+
+https://storybook.js.org/docs/7.0/vue/writing-stories/play-function
