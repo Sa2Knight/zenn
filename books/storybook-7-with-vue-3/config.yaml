@@ -27,3 +27,4 @@ chapters:
   - decorators
   - play_function
   - test-runner
+  - vue-i18n
