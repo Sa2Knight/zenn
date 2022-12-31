@@ -27,12 +27,12 @@ export default config;
 ```bash
 $ yarn storybook dev
 
-@storybook/cli v7.0.0-beta.14
+@storybook/cli v7.0.0-beta.17
 
 info => Starting manager..
 ╭────────────────────────────────────────────────────╮
 │                                                    │
-│   Storybook 7.0.0-beta.14 for vue3-vite started    │
+│   Storybook 7.0.0-beta.17 for vue3-vite started    │
 │   53 ms for manager and 526 ms for preview         │
 │                                                    │
 │    Local:            http://localhost:50045/       │

@@ -8,7 +8,7 @@ free: true
 これらについては百聞は一見に如かずであるため、さっそくインストールしましょう。
 
 ```bash
-$ yarn add -D @storybook/addon-measure@7.0.0-beta.14 @storybook/addon-outline@7.0.0-beta.14
+$ yarn add -D @storybook/addon-measure@7.0.0-beta.17 @storybook/addon-outline@7.0.0-beta.17
 ```
 
 `.storybook/main.ts` に追記します。

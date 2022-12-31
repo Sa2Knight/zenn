@@ -145,7 +145,7 @@ https://www.typescriptlang.org/tsconfig#types
 
 本事象は、特に `Storybook` で発生することが多いようです。
 
-最近の例だと `Storybook 7.0.0-beta.14` では、アドオン経由で `@types/react` が入ってきてしまいました。
+最近の例だと `Storybook 7.0.0-beta.17` では、アドオン経由で `@types/react` が入ってきてしまいました。
 
 ```bash
 $ yarn why @types/react

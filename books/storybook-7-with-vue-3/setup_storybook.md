@@ -18,7 +18,7 @@ free: true
 まず、`Storybook` の起動やビルドをコマンドラインで行うための CLI をインストールします。
 
 ```bash
-$ yarn add -D storybook@7.0.0-beta.14
+$ yarn add -D storybook@7.0.0-beta.17
 ```
 
 これで `yarn storybook <command>` の形式で `Storybook` を動かす準備ができました。
@@ -28,7 +28,7 @@ $ yarn add -D storybook@7.0.0-beta.14
 本書では `Vue 3` 及び `Vite` を使用するので、それにあわせて `@storybook/vue3-vite` をインストールします。
 
 ```bash
-$ yarn add -D @storybook/vue3-vite@7.0.0-beta.14
+$ yarn add -D @storybook/vue3-vite@7.0.0-beta.17
 ```
 
 ちなみに `@storybook/vue3-vite` は以下のパッケージを内包したプリセットになっています。

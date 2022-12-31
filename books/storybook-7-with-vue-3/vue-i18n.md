@@ -198,7 +198,7 @@ setup((app) => {
 ツールバーは `@storybook/addon-toolbars` を使用すれば任意にカスタマイズし、ツールバーで選択された値を参照もできるようになるため、まずはアドオンを追加します。
 
 ```bash
-$ yarn add -D @storybook/addon-toolbars@7.0.0-beta.14
+$ yarn add -D @storybook/addon-toolbars@7.0.0-beta.17
 ```
 
 ```ts:.storybook/main.ts

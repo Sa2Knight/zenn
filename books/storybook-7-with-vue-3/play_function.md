@@ -159,7 +159,7 @@ export const Default: Story = {};
 下準備も整ったので、アドオン及びパッケージをインストールします。
 
 ```bash
-$ yarn add -D @storybook/addon-interactions@7.0.0-beta.14 @storybook/testing-library
+$ yarn add -D @storybook/addon-interactions@7.0.0-beta.17 @storybook/testing-library
 ```
 
 `@storybook/addon-interactions` は `Storybook` のアドオンであるため、例によって `.storybook/main.ts` に追記します。

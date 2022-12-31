@@ -59,7 +59,7 @@ export const Logout: Story = {
 `Actions Addon` の話に戻ります。まずはアドオンをインストールし、`.storybook/main.ts` に追加します。
 
 ```bash
-$ yarn add -D @storybook/addon-actions@7.0.0-beta.14
+$ yarn add -D @storybook/addon-actions@7.0.0-beta.17
 ```
 
 ```ts:.storybook/main.ts
