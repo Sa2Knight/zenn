@@ -70,10 +70,10 @@ export default i18n;
 
 ```ts:src/main.ts
 import { createApp } from "vue";
+import App from "./App.vue";
 import i18n from "./i18n";
-import MyPage from "./components/MyPage.vue";
 
-createApp(MyPage).use(i18n).mount("#app"); // i18n プラグインを適用
+createApp(App).use(i18n).mount("#app");
 ```
 
 # コンポーネント側の I18n 対応
@@ -85,7 +85,7 @@ createApp(MyPage).use(i18n).mount("#app"); // i18n プラグインを適用
   <header>
     <h1>{{ $t("header.title") }}</h1>
     <div class="buttons">
-      <template v-if="props.user.id">
+      <template v-if="props.isLoggedIn">
         <MyButton
           size="small"
           :label="$t('header.logout')"
@@ -112,7 +112,12 @@ createApp(MyPage).use(i18n).mount("#app"); // i18n プラグインを適用
 ```html:src/components/MyPage.vue
 <template>
   <div>
-    <MyHeader :user="user" @login="login" @logout="logout" @signUp="signUp" />
+    <MyHeader
+      :isLoggedIn="!!user"
+      @login="login"
+      @logout="logout"
+      @signUp="signUp"
+    />
     <main>
       <div class="content-wrapper">
         <div class="content" :key="i" v-for="i in 10">
@@ -122,6 +127,7 @@ createApp(MyPage).use(i18n).mount("#app"); // i18n プラグインを適用
     </main>
   </div>
 </template>
+
 ```
 
 ここまでで、開発環境上での I18n 対応が完了しました。開発サーバーを起動して動作を確認してみましょう。

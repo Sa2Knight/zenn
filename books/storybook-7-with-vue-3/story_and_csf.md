@@ -18,14 +18,14 @@ const meta: Meta<typeof MyButton> = {
   component: MyButton,
 };
 
-export default meta;
-
 export const Default: Story = {
   render: () => ({
     components: { MyButton },
     template: "<MyButton label='ボタン' />",
   }),
 };
+
+export default meta;
 ```
 
 `Storybook` における「ストーリー」とは、コンポーネントを `Storybook` 上で描画する最小単位であり、指定されたレンダリング方法に基づいてコンポーネントをレンダリングします。

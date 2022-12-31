@@ -111,7 +111,7 @@ button.small {
 
 |props名|型|役割|
 |----|---|---|
-|user|Object|ログイン中のユーザがオブジェクト|
+|isLoggedIn|Boolean|ユーザーがログイン中であるかのフラグ|
 
 `MyHeader` は、ユーザーのログイン状態に応じてボタンを出し分けます。
 
@@ -127,8 +127,8 @@ button.small {
 import MyButton from "./MyButton.vue";
 
 const props = defineProps({
-  user: {
-    type: Object,
+  isLoggedIn: {
+    type: Boolean,
     required: true,
   },
 });
@@ -140,12 +140,8 @@ const emits = defineEmits(["login", "signUp", "logout"]);
   <header>
     <h1>Storybook 7 + Vue 3 + TypeScript サンプル</h1>
     <div class="buttons">
-      <template v-if="props.user.id">
-        <MyButton
-          size="small"
-          label="ログアウト"
-          @click="$emit('logout')"
-        />
+      <template v-if="props.isLoggedIn">
+        <MyButton size="small" label="ログアウト" @click="$emit('logout')" />
       </template>
       <template v-else>
         <MyButton size="small" label="ログイン" @click="$emit('login')" />
@@ -193,28 +189,32 @@ button + button {
 
 ```vue:src/components/MyPage.vue
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref } from "vue";
 import MyHeader from "./MyHeader.vue";
 
-const user = reactive<{ id?: number }>({});
+type User = {
+  id: number;
+};
+
+const user = ref<User | null>(null);
 
 function login() {
-  user.id = 1;
+  user.value = { id: 1 };
 }
 
 function logout() {
-  user.id = undefined;
+  user.value = null;
 }
 
 function signUp() {
-  window.open("https://zenn.dev/sa2knight"); // 会員登録画面を開くイメージ
+  // TODO: 会員登録フォームに移動する
 }
 </script>
 
 <template>
   <div>
     <MyHeader
-      :user="user"
+      :isLoggedIn="!!user"
       @login="login"
       @logout="logout"
       @signUp="signUp"
@@ -253,16 +253,28 @@ function signUp() {
 
 # 動作確認
 
-最後に、 `MyPage` コンポーネントをアプリケーションルートにし、開発サーバーで動作確認をします。
+アプリケーションルートで `MyPage` コンポーネントを表示するように `App.vue` を以下のように修正します。
 
-`src/main.ts` を以下のように書き換えてください。
+```vue:src/App.vue
+<script setup lang="ts">
+import MyPage from "./components/MyPage.vue";
+</script>
+
+<template>
+  <MyPage />
+</template>
+```
+
+また、 `src/main.js` にある、スキャフォルドされたスタイルシートの `import` は不要なので削除します。
 
 ```ts:src/main.ts
 import { createApp } from "vue";
-import MyPage from "./components/MyPage.vue";
+// import "./style.css"; ここを削除
+import App from "./App.vue";
 
-createApp(MyPage).mount("#app");
+createApp(App).mount("#app");
 ```
+
 
 この状態で開発環境を起動すれば、３コンポーネントを組み合わせたサンプルアプリケーションを動かすことができます。
 
@@ -277,4 +289,4 @@ $ yarn dev
 
 ![](https://storage.googleapis.com/zenn-user-upload/b45db66583ba-20221225.png)
 
-これでコンポーネントの作成は完了です。以降は `Storybook` を使用するため、開発サーバーは終了して構いません。
+これでコンポーネントの作成は完了です。しばらくは `Storybook` を使用するため、開発サーバーは終了して構いません。

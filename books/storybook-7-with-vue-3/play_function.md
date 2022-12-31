@@ -144,14 +144,11 @@ const meta: Meta<typeof SignUpForm> = {
     },
     template: "<SignUpForm v-bind='args' />",
   }),
-  argTypes: {
-    onSubmit: { action: "onSubmit" },
-  },
 };
 
-export default meta;
-
 export const Default: Story = {};
+
+export default meta;
 ```
 
 # アドオン及びパッケージインストール
@@ -163,6 +160,8 @@ $ yarn add -D @storybook/addon-interactions@7.0.0-beta.17 @storybook/testing-lib
 ```
 
 `@storybook/addon-interactions` は `Storybook` のアドオンであるため、例によって `.storybook/main.ts` に追記します。
+
+また、本来は `Node.js` で実行される想定のコードが `Storybook` を通じてブラウザ上で動作されるため、 ブラウザに定義されていない `global` を `window` で再定義します。
 
 ```ts:.storybook/main.ts
 import { StorybookConfig } from "@storybook/vue3-vite";
@@ -180,6 +179,16 @@ const config: StorybookConfig = {
     "@storybook/addon-docs",
     "@storybook/addon-interactions", // 追加
   ],
+  // Jest を Node でなくブラウザ上で実行するため、global を window にする
+  viteFinal: (config) => {
+    return {
+      ...config,
+      define: {
+        ...config.define,
+        global: "window",
+      },
+    };
+  },
 };
 
 export default config;
@@ -198,7 +207,7 @@ export default config;
 
 それぞれ `Complete` `Error` というストーリー名で以下のように定義します。
 
-```ts:.storybook/main.ts
+```ts:src/stories/SignUpForm.stories.ts
 import { userEvent, within } from "@storybook/testing-library";
 
 // 中略
@@ -234,6 +243,8 @@ export const Error: Story = {
     await userEvent.click(submitButton);
   },
 };
+
+export default meta;
 ```
 
 `Storybook` を開くと、 `Complete` `Error` のストーリーが追加され、それらを開いた瞬間にインタラクションが完了しています。

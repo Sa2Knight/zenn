@@ -25,7 +25,7 @@ export default config;
 これで最低限の設定ファイルは完成です。 CLI を使って、 `Storybook` を起動してみましょう。
 
 ```bash
-$ yarn storybook dev
+$ yarn storybook dev --port 6006
 
 @storybook/cli v7.0.0-beta.17
 
@@ -33,15 +33,15 @@ info => Starting manager..
 ╭────────────────────────────────────────────────────╮
 │                                                    │
 │   Storybook 7.0.0-beta.17 for vue3-vite started    │
-│   53 ms for manager and 526 ms for preview         │
+│   25 ms for manager and 454 ms for preview         │
 │                                                    │
-│    Local:            http://localhost:50045/       │
-│    On your network:  http://192.168.0.27:50045/    │
+│    Local:            http://localhost:6006/        │
+│    On your network:  http://192.168.0.27:6006/     │
 │                                                    │
 ╰────────────────────────────────────────────────────╯
 ```
 
-http://localhost:50045 にアクセスし、以下のような画面が表示されていれば成功です。
-まだストーリーを定義していないのでエラーは発生していますが、 `Storybook` の起動まで 53ms という高速さは既に実感できます。
+http://localhost:6006 にアクセスし、以下のような画面が表示されていれば成功です。
+まだストーリーを定義していないのでエラーは発生していますが、 `Storybook` の起動まで 25ms という高速さは既に実感できます。 (当然、起動時間はお使いの環境などで上下します)
 
 ![](https://storage.googleapis.com/zenn-user-upload/23ae47827b98-20221224.png)

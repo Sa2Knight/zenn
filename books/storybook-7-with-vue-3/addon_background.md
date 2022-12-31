@@ -53,7 +53,7 @@ export default config;
 Viewport と同様に、 `parameters` フィールドを用いて背景色のリストを定義できます。
 
 ```ts
-const parameters = {
+parameters: {
   backgrounds: {
     default: "twitter",
     values: [

@@ -33,9 +33,20 @@ const config: StorybookConfig = {
     "@storybook/addon-docs", // 追加
   ],
 };
-```
 
 export default config;
+```
+
+# ※ `.vue` ファイルで型エラーが発生している場合
+
+[`VSCode`](https://code.visualstudio.com/) 及び [Volar](https://github.com/johnsoncodehk/volar) を使用している場合、`@storybook/addon-docs` を追加した時点で、`.vue` ファイルで以下のような型エラーが起こりえます。
+
+![](https://storage.googleapis.com/zenn-user-upload/da93cf1e91c4-20221231.png)
+
+この場合、以下記事のような対応が必要になりますが、本書では割愛しますので、エラーを無視しても構いません。
+
+https://zenn.dev/sa2knight/articles/volar-with-react
+
 
 # ドキュメントを自動生成する
 
@@ -156,7 +167,7 @@ export default config;
 
 以下では `MyHeader` コンポーネントのドキュメントを、ストーリーを埋め込みつつ作成しています。
 
-```js:src/stories/MyPage.mdx
+```js:src/stories/MyHeader.mdx
 import { Canvas, Meta, Story, ArgsTable } from '@storybook/blocks';
 import MyHeader from '../components/MyHeader.vue';
 import * as MyHeaderStories from './MyHeader.stories';

@@ -33,24 +33,22 @@ const meta: Meta<typeof MyHeader> = {
   }),
 };
 
-export default meta;
-
 export const Login: Story = {
   args: {
-    user: {
-      id: 1,
-    },
+    isLoggedIn: true,
   },
 };
 
 export const Logout: Story = {
   args: {
-    user: {},
+    isLoggedIn: false,
   },
 };
+
+export default meta;
 ```
 
-`MyHeader` はユーザー情報を受け取り、その有無で表示するボタンを切り替えます。`Login` `Logout` の２種類を用意することで、これを確認しやすくします。
+`MyHeader` はユーザーのログインフラグを受け取り、その有無で表示するボタンを切り替えます。`Login` `Logout` の２種類を用意することで、これを確認しやすくします。
 
 ![](https://storage.googleapis.com/zenn-user-upload/9b706c030ab3-20221226.gif)
 

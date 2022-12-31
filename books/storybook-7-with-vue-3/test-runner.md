@@ -90,6 +90,8 @@ export const Error: Story = {
     await userEvent.click(submitButton);
   },
 };
+
+export default meta
 ```
 
 上記のユーザーインタラクションは、フォーム入力とボタン押下までを行っていますが、その結果は目視することが前提で機械的に正しく動いているかの判定はしていませんでした。
@@ -146,6 +148,8 @@ export const Error: Story = {
     expect(await canvas.queryByText("18歳以上でなければ登録できません")).toBeTruthy();
   },
 };
+
+export default meta
 ```
 
 これでユーザーインタラクション後のコンポーネントの振る舞いをテストできるようになりました。
@@ -159,7 +163,7 @@ function onSubmit() {
   errors.age = state.age > 18 ? "18歳以上でなければ登録できません" : "";
 
   if (errors.name === "" && errors.age === "") {
-    emits("submit", { name: state.name, age: state.age });
+    // TODO: ここでログイン処理をしてトップページに戻る
   }
 }
 ```

@@ -30,7 +30,7 @@ export default config;
 設定ファイル編集後は、 `Storybook` を再起動する必要があります。
 
 ```bash
-$ yarn storybook dev
+$ yarn storybook dev --port 6006
 ```
 
 `Storybook` で　`With Initial Count` を開くと、画面下部のパネルに `Controls` タブが表示されるようになっています。
@@ -109,16 +109,35 @@ console.log(JSON.stringify(MyButton.__docgenInfo, null, 2));
 
 ストーリーを一つにまとめつつ、これらの `props` についても書き換えられるようにしましょう。
 
-```ts:src/stories/MyButton.ts
-// 前略
+なお、各ストーリーで共通の設定は `meta` に一括で定義できるため、そちらに定義しています。
 
-export const Default: Story = {
+```ts:src/stories/MyButton.ts
+import MyButton from "../components/MyButton.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+
+type Story = StoryObj<typeof MyButton>;
+
+const meta: Meta<typeof MyButton> = {
+  title: "MyButton",
+  component: MyButton,
+  render: (args) => ({
+    components: { MyButton },
+    setup() {
+      return { args };
+    },
+    template: "<MyButton v-bind='args' />",
+  }),
+  // ここにまとめて args を定義
   args: {
     label: "ボタン",
     variant: "primary",
     size: "medium",
   },
 };
+
+export const Default: Story = {};
+
+export default meta;
 ```
 
 `variant` `size` についても、 `Controls` タブから値を書き換えることで、スタイルの変更を反映させることができました。
@@ -159,7 +178,12 @@ const meta: Meta<typeof MyButton> = {
     },
     template: "<MyButton v-bind='args' />",
   }),
-  // ここを追加
+  args: {
+    label: "ボタン",
+    variant: "primary",
+    size: "medium",
+  },
+  // ここに args の型情報を定義
   argTypes: {
     variant: {
       control: {

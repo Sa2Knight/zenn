@@ -44,20 +44,20 @@ const meta: Meta<typeof MyButton> = {
   component: MyButton,
 };
 
-export default meta;
-
 export const Default: Story = {
   render: () => ({
     components: { MyButton },
     template: "<MyButton label='ボタン' />",
   }),
 };
+
+export default meta;
 ```
 
 ストーリーファイルの中身を見る前に、まずは `Storybook` を起動して、動作を確認します。
 
 ```bash
-$ yarn storybook dev
+$ yarn storybook dev --port 6006
 ```
 
 以下のように、`Storybook` のサンドボックス上にコンポーネントが描画されました。これではじめてのストーリーが完成しました。

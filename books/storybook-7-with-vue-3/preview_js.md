@@ -27,17 +27,11 @@ free: true
 `preview.js` で `export` することで設定できるオブジェクトは以下の３種類です。
 
 ```ts:.storybook/preview.ts
-export const parameters = {
+export const parameters = {};
 
-}
+export const decorators = [];
 
-export const decorators = {
-
-}
-
-export const globalTypes = {
-
-}
+export const globalTypes = {};
 ```
 
 `parameters` のみ、本書で既に登場していますが、改めて紹介します。
@@ -62,8 +56,6 @@ export const globalTypes = {
 import MyPage from "../components/MyPage.vue";
 import type { Meta, StoryObj } from "@storybook/vue3";
 
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
-
 type Story = StoryObj<typeof MyPage>;
 
 const meta: Meta<typeof MyPage> = {
@@ -73,7 +65,6 @@ const meta: Meta<typeof MyPage> = {
     components: { MyPage },
     template: "<MyPage />",
   }),
-  // PC, Mobile それぞれのビューポートを作成 (高さは指定しない)
   parameters: {
     viewport: {
       viewports: {
@@ -96,8 +87,6 @@ const meta: Meta<typeof MyPage> = {
   },
 };
 
-export default meta;
-
 export const ForPc: Story = {
   parameters: {
     viewport: {
@@ -113,6 +102,8 @@ export const ForMobile: Story = {
     },
   },
 };
+
+export default meta;
 ```
 
 ビューポートの影響を受けるコンポーネントがこれだけなら良いのですが、実際はコンポーネントごとにそれぞれレスポンシブであることがあるため、まとめて定義したほうが便利です。
@@ -166,18 +157,19 @@ const meta: Meta<typeof MyPage> = {
   }),
 };
 
-export default meta;
-
+// デフォルトで PC レイアウトになるので、ここでは何も指定しない
 export const ForPc: Story = {};
 
+// デフォルト設定を上書きしてモバイルレイアウトにする
 export const ForMobile: Story = {
-  // このストーリーのみデフォルトビューポートを変更する
   parameters: {
     viewport: {
       defaultViewport: "mobile",
     },
   },
 };
+
+export default meta;
 ```
 
 他のコンポーネントでも、デフォルトのビューポート (`Min PC Layout`) が使用されるようになりました。

@@ -35,17 +35,17 @@ $ yarn add -D @storybook/vue3-vite@7.0.0-beta.17
 
 |パッケージ名|用途|
 |----|----|
-|@storybook/core-server|Storybook 本体のサーバーサイド(Node.js)|
-|@storybook/vue3|Vue 3 のストーリーをレンダリングする|
-|@storybook/builder-vite|Storybook を Vite でビルドする|
-|vue-docgen-api|Vue コンポーネントからインタフェース情報などを抽出する|
+|`@storybook/core-server`|Storybook 本体のサーバーサイド(Node.js)|
+|`@storybook/vue3`|Vue 3 のストーリーをレンダリングする|
+|`@storybook/builder-vite`|Storybook を Vite でビルドする|
+|`vue-docgen-api`|Vue コンポーネントからインタフェース情報などを抽出する|
 
 あえてカスタマイズした使い方をしたい場合は、上記のパッケージを個別にインストール、設定もできますが、基本的には `@storybook/vue3-vite` のようなプリセットを使用すれば良いでしょう。
 
 
 # React
 
-`Vue` を使う場合に違和感がありますが、`Storybook` には `React` が使用されているため、別途インストールが必要になります。
+本書では `Vue` を使うため違和感がありますが、`Storybook` には `React` が使用されているため、 別途 `React` のインストールが必要になります。
 
 ```bash
 $ yarn add -D react react-dom

@@ -95,8 +95,6 @@ const meta: Meta<typeof MyButton> = {
   }),
 };
 
-export default meta;
-
 export const Default: Story = {
   args: {
     label: "ボタン",
@@ -114,9 +112,11 @@ export const SignUp: Story = {
     label: "会員登録",
   },
 };
+
+export default meta;
 ```
 
-個人的にはこれは頻出パターンで、さらに `args` についても共通設定を抜き出すことが多いです。本書でも以降はこの形式を使用することが多いので覚えておいてください。
+これは頻出パターンで、さらに `args` についても共通設定を抜き出すことが多いです。本書でも以降はこの形式を使用することが多いので覚えておいてください。
 
 # 問題点
 

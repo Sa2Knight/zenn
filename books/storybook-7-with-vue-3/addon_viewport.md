@@ -34,9 +34,9 @@ const meta: Meta<typeof MyPage> = {
   }),
 };
 
-export default meta;
-
 export const Default: Story = {};
+
+export default meta;
 ```
 
 以下のように、 `MyHeader` とコンテンツを含んだ `MyPage` コンポーネントが確認できます。
@@ -206,6 +206,8 @@ export const ForMobile: Story = {
     },
   },
 };
+
+export default meta;
 ```
 
 ストーリーを切り替えるとビューポートも自動で切り替わるようになりました。

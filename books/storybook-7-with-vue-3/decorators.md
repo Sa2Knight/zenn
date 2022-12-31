@@ -5,17 +5,19 @@ free: true
 
 # Decorator について
 
-`Decorator` は、ストーリーとは別のレンダー関数を用いてストーリーをラップする機能です。
+`Decorator` は、ストーリーとは別のコンポーネントを用いてストーリーをラップする機能です。
 
 平たく言えばストーリーの親コンポーネントを定義できるようになるため、ストーリーのレイアウトを整えたり、各種セットアップを一元化などができます。
 
 # グローバル Decorator を定義する
 
-`Decorator` は `Parameter` と同様、コンポーネントやストーリーごとに定義も出来ますが、 `preview.js` でグローバル Decorator を定義もできます。
+`Decorator` は `Parameter` と同様、コンポーネントやストーリーごとに定義も出来ますが、 `preview.js` でグローバル Decorator を定義することが多いです。
 
 ここではシンプルに、ストーリーの周囲にマージンを設けるデコレータを定義します。
 
 ```ts:.storybook/preview.ts
+import { Decorator } from "@storybook/vue3";
+
 export const decorators: Decorator[] = [
   () => {
     return {
