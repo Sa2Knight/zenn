@@ -7,6 +7,8 @@ free: false
 
 なお、`Vue.js` コミュニティの推奨に基づいて `Pinia` を使用しますが、 `vuex` でも大きな違いはありません。
 
+# `Pinia` のインストール
+
 ```bash
 $ yarn add pinia
 ```

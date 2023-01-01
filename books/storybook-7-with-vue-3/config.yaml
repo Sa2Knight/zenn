@@ -29,3 +29,4 @@ chapters:
   - test-runner
   - vue-i18n
   - pinia
+  - vue-router
