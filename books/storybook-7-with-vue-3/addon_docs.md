@@ -14,7 +14,7 @@ free: true
 `essentials addons` シリーズはこれで最後になります。
 
 ```bash
-yarn add -D @storybook/addon-docs@7.0.0-beta.17
+yarn add -D @storybook/addon-docs@7.0.0-beta.20
 ```
 
 ```ts:.storybook/main.ts

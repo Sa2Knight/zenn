@@ -48,7 +48,7 @@ export default meta;
 これまで同様、アドオンをインストールし、`.storybook/main.ts` に追加します。
 
 ```bash
-$ yarn add -D @storybook/addon-viewport@7.0.0-beta.17
+$ yarn add -D @storybook/addon-viewport@7.0.0-beta.20
 ```
 
 ```ts:.storybook/main.ts

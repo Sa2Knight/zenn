@@ -20,7 +20,7 @@ free: true
 例によって、アドオンをインストールし、`.storybook/main.ts` に追加します。
 
 ```bash
-$ yarn add -D @storybook/addon-backgrounds@7.0.0-beta.17
+$ yarn add -D @storybook/addon-backgrounds@7.0.0-beta.20
 ```
 
 ```ts:.storybook/main.ts
