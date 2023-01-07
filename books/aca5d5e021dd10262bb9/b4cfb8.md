@@ -1,6 +1,6 @@
 ---
 title: "[アドオン編] Docs addon"
-free: false
+free: true
 ---
 
 # Docs addon について

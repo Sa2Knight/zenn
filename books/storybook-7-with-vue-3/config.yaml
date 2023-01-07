@@ -2,14 +2,12 @@ title: "Storybook 7 を Vue 3 + TypeScript ではじめよう！"
 summary: |-
   想定読者や使い方などについては「はじめに」の章をご覧ください。
 
-  500円と設定していますが、ほとんどの章は無料です。
-
   # 更新情報
 
   公開時点で Storybook 7 が β 版のため、逐次最新情報を元に内容を更新する予定。
 topics: ["javascript", "vue", "vite", "storybook"]
 published: false
-price: 500
+price: 0
 chapters:
   - summary
   - what_is_storybook

@@ -1,6 +1,6 @@
 ---
 title: pinia でグローバルステートを管理する
-free: false
+free: true
 ---
 
 本章では、[Pinia](https://pinia.vuejs.org/) を用いたグローバルステートをアプリケーションに導入し、`Storybook` 上でもそれを扱えるようにします。
