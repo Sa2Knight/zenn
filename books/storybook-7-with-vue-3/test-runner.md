@@ -11,7 +11,7 @@ title: ストーリーを自動テストする
 `Storybook` を用いた自動テストには [`@storybook/test-runner`](https://github.com/storybookjs/test-runner) を使用します。
 
 ```bash
-$ yarn add -D @storybook/test-runner@0.10.0-next.3
+$ yarn add -D @storybook/test-runner@0.10.0-next.4
 ```
 
 `test-runner` は、起動している `Storybook` に対して各ストーリーを [Playwright](https://playwright.dev/) を用いて開きます。
@@ -52,7 +52,7 @@ Ran all test suites.
 
 # ユーザーインタラクションをテストする
 
-`test-runner` を実行するだけで、すべてのストーリーがエラー無く開けることは確認できました。
+`test-runner` によって、すべてのストーリーを閲覧できることを自動で確認できました。
 
 しかし、コンポーネントが意図通りの挙動をしていることを担保するために、ユーザーインタラクションを組み合わせることができます。
 
@@ -94,7 +94,7 @@ export const Error: Story = {
 export default meta
 ```
 
-上記のユーザーインタラクションは、フォーム入力とボタン押下までを行っていますが、その結果は目視することが前提で機械的に正しく動いているかの判定はしていませんでした。
+上記のユーザーインタラクションは、フォーム入力とボタン押下まで行っていますが、その結果は目視することが前提で機械的に正しく動いているかの判定はしていませんでした。
 
 フォームの入力内容に応じて、エラーメッセージが出ること、出ないことを `test-runner` で判別できるようにします。
 
@@ -152,7 +152,7 @@ export const Error: Story = {
 export default meta
 ```
 
-これでユーザーインタラクション後のコンポーネントの振る舞いをテストできるようになりました。
+これでユーザーインタラクション後のコンポーネントの状態をテストできるようになりました。
 
 試しにエラーメッセージを出すロジックにバグを仕込んでみましょう。
 

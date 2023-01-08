@@ -33,13 +33,13 @@ export default config;
 $ yarn storybook dev --port 6006
 ```
 
-`Storybook` で　`With Initial Count` を開くと、画面下部のパネルに `Controls` タブが表示されるようになっています。
+`Storybook` を開くと、画面下部のパネルに `Controls` タブが表示されるようになっています。
 
-`Controls` では `args` で設定した `props` を GUI 上で書き換えることができ、その変更がリアクティブに反映されます。
+`Controls` タブでは `args` で設定した `props` を GUI 上で書き換えることができ、その変更がリアクティブに反映されます。
 
 ![](https://storage.googleapis.com/zenn-user-upload/689503931bf5-20221226.gif)
 
-# Controls addon の原理を知る
+# Controls addon の仕組みを知る
 
 先程の例で、`args` で設定された `label` を動的に書き換えられることがわかりました。
 
@@ -49,7 +49,7 @@ $ yarn storybook dev --port 6006
 
 https://github.com/vue-styleguidist/vue-styleguidist/tree/dev/packages/vue-docgen-api
 
-このパッケージは Vue コンポーネントから、 `props` などのインタフェース情報を抽出する機能を持っています。 `@storybook/vue3-vite` では `Vite` でのビルド時にインタフェース情報をオブジェクトに追加する処理を行うことで、`Storybook` にそれを伝えています。
+このパッケージは `Vue` コンポーネントから、 `props` などのインタフェース情報を抽出する機能を持っています。 `@storybook/vue3-vite` では `Vite` でのビルド時にインタフェース情報をオブジェクトに追加する処理を行うことで、`Storybook` にそれを伝えています。
 
 https://github.com/storybookjs/storybook/blob/ca358694c34c61283da1c685078f104773e0d4e2/code/frameworks/vue3-vite/src/preset.ts#L20
 
@@ -107,7 +107,7 @@ console.log(JSON.stringify(MyButton.__docgenInfo, null, 2));
 
 `MyButton` コンポーネントの `props` には、 `label` のほかに、`variant` `size` があります。
 
-ストーリーを一つにまとめつつ、これらの `props` についても書き換えられるようにしましょう。
+`Login` `SignUp` ストーリーを一つにまとめつつ、これらの `props` についても書き換えられるようにしましょう。
 
 なお、各ストーリーで共通の設定は `meta` に一括で定義できるため、そちらに定義しています。
 
@@ -148,7 +148,7 @@ export default meta;
 
 上記 gif でも、入力途中の状態では壊れたスタイルになってしまう上、そもそも何を受け付けているかが不明です。
 
-こういった問題を解決するため、 `Storybook` では入力を制限するための以下のコントロール UI が提供されています。
+こういった問題を解決するため、 `Storybook` では入力を制限するための以下のコントロール UI を使用できます。
 
 - 真偽値
 - 数値
@@ -210,8 +210,6 @@ const meta: Meta<typeof MyButton> = {
 :::message
 Vue 3 には、型レベルで `props` を定義する手段があります。ただし `vue-docgen-api` がインタフェースを取得する際にユニオン型の内容まで取り出せていないため、このような二度手間が必要になるようです。(`vue-docgen-api` のアップデートで解決している可能性があります)
 :::
-
-このあたりは手動でやる必要が出てくるので、やや億劫ではありますが、 props が取りうる値をより具体化することで、ドキュメントとしての実用性を高めることができます。
 
 ここではラジオボタンをセレクトボックスを使用しましたが、その他のコントロール UI については関連リンクを参照してください。
 

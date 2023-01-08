@@ -5,7 +5,7 @@ free: true
 
 本章では、[Pinia](https://pinia.vuejs.org/) を用いたグローバルステートをアプリケーションに導入し、`Storybook` 上でもそれを扱えるようにします。
 
-なお、`Vue.js` コミュニティの推奨に基づいて `Pinia` を使用しますが、 `vuex` でも大きな違いはありません。
+なお、`Vue.js` コミュニティの推奨に基づいて `Pinia` を使用しますが、 [`Vuex`](https://vuex.vuejs.org/ja/) でも大きな違いはありません。
 
 # `Pinia` のインストール
 
@@ -76,7 +76,7 @@ export const pinia = createPinia();
 export default pinia;
 ```
 
-`createPinia` で作成した I18n の設定は、Vue プラグインの形式になっているため、開発環境で動作確認するために `src/main.ts` も修正します。
+`createPinia` で作成した `pinia` の設定は、Vue プラグインの形式になっているため、開発環境で動作確認するために `src/main.ts` も修正します。
 
 ```ts:src/main.ts
 import { createApp } from "vue";
@@ -152,9 +152,12 @@ import pinia from "../src/pinia";
 // 中略
 
 setup((app) => {
-  // app が Vue インスタンスにあたるので Vue I18n / Pinia インスタンスを注入する
-  app.use(i18n);
-  app.use(pinia);
+  // app が Vue インスタンスにあたるので Vue I18n インスタンスを注入する
+  // 同一の Vue インスタンスに対して setup 関数は複数回実行されるため、既に注入済みかを確認する
+  if (!app.__VUE_I18N__) {
+    app.use(i18n);
+    app.use(pinia);
+  }
 });
 ```
 
@@ -173,6 +176,7 @@ export const decorators: Decorator[] = [
   (story, context) => {
     i18n.global.locale = context.globals.locale;
     return {
+      // ここを追加
       setup() {
         const currentUserStore = useCurrentUserStore();
         currentUserStore.$reset();

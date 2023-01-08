@@ -2,7 +2,7 @@
 title: Vue Router でのルーティング
 ---
 
-本章では、 [Vue Router](https://router.vuejs.org/) を使用したルーティングをアプリケーションに組み込み、 `Storybook` 上でもルーティングを行えるようにします。
+本章では、[Vue Router](https://router.vuejs.org/) を使用したルーティングをアプリケーションに組み込み、 `Storybook` 上でもルーティングを行えるようにします。
 
 # Vue Router のセットアップ
 
@@ -98,13 +98,13 @@ createApp(App).use(i18n).use(pinia).use(createRouter("history")).mount("#app");
 
 ![](https://storage.googleapis.com/zenn-user-upload/80f151429dc2-20230101.gif)
 
-これを、`Storybook` 上でも `TopPage` `ProfilePage` をストーリー化し、同様に画面遷移できるようにしていきます。
+これを、`Storybook` 上でも `TopPage` `ProfilePage` をストーリー化し、同様に `Vue Router` を用いた画面遷移できるようにしていきます。
 
 # `Storybook` 側にも　`Vue Router` を組み込む
 
 `Vue I18n` `Pinia` の章と同様になりますが、 `Storybook` 用の Vue インスタンスにも `VueRouter` プラグインを適用する必要があります。
 
-アプリケーションコードと異なり、URL を直接使えないため、 `createMemoryHistory` を使ったインメモリルーターを生成します。
+アプリケーションコードと異なり、URL を直接使えないため、 `createMemoryHistory` を使ったオンメモリルーターを生成します。
 
 ```ts:.storybook/pinia
 import i18n from "../src/i18n";
@@ -118,10 +118,13 @@ import { setup } from "@storybook/vue3";
 const router = createRouter("memory");
 
 setup((app) => {
-  // app が Vue インスタンスにあたるので Vue I18n / Pinia / VueRouter インスタンスを注入する
-  app.use(i18n);
-  app.use(pinia);
-  app.use(router);
+  // app が Vue インスタンスにあたるので Vue I18n インスタンスを注入する
+  // 同一の Vue インスタンスに対して setup 関数は複数回実行されるため、既に注入済みかを確認する
+  if (!app.__VUE_I18N__) {
+    app.use(i18n);
+    app.use(pinia);
+    app.use(router);
+  }
 });
 ```
 
@@ -129,7 +132,7 @@ setup((app) => {
 
 # ページコンポーネント用のストーリーを作成する
 
-ここでは、ページコンポーネント(`TopPage` `ProfilePage`) それぞれのストーリーを一つのファイルにまとめて実装します。
+ここでは、ページコンポーネント(`TopPage`, `ProfilePage`) それぞれのストーリーを一つのファイルにまとめて実装します。
 
 本ファイルは `src/App.vue` と同じ用に、現在のルートに対応するコンポーネントを描画するようにします。
 

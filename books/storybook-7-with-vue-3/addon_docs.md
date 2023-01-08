@@ -5,9 +5,9 @@ free: true
 
 # Docs addon について
 
-`Docs addon` は、`essentials addons` の一つで、 `Storybook` 上で、 **コンポーネントのドキュメントを提供する** アドオンです。
+`Docs addon` は、`essentials addons` の一つで、 `Storybook` 上で、**コンポーネントのドキュメントを提供する**アドオンです。
 
-ドキュメントには **ストーリーから自動生成** できるものや、 `MDX` を用いてカスタマイズする手法まであります。
+ドキュメントには**ストーリーから自動生成**できるものや、 `MDX` を用いてカスタマイズする手法まであります。
 
 # アドオンのインストール
 
@@ -55,7 +55,10 @@ https://zenn.dev/sa2knight/articles/volar-with-react
 `Docs addon` では、 `default export` するメタデータに、 `tags: ["autodocs"]` を付与することで、そのコンポーネントのドキュメントを自動生成できます。
 
 ```ts:src/stories/MyButton.stories.ts
-// 前略
+import MyButton from "../components/MyButton.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+
+type Story = StoryObj<typeof MyButton>;
 
 const meta: Meta<typeof MyButton> = {
   title: "MyButton",
@@ -68,10 +71,35 @@ const meta: Meta<typeof MyButton> = {
     template: "<MyButton v-bind='args' />",
   }),
   tags: ["autodocs"], // ここを追加
-  // 以下略
-}
+  args: {
+    label: "ボタン",
+    variant: "primary",
+    size: "medium",
+  },
+  argTypes: {
+    variant: {
+      control: {
+        type: "inline-radio",
+      },
+      options: ["primary", "secondary"],
+    },
+    size: {
+      control: {
+        type: "select",
+      },
+      options: ["small", "medium", "large"],
+    },
+  },
+};
+export const Default: Story = {
+  args: {
+    label: "ボタン",
+    variant: "primary",
+    size: "medium",
+  },
+};
 
-// 以下略
+export default meta;
 ```
 
 `Storybook` を確認すると、 `MyButton` コンポーネントに `document` というストーリーが追加され、ドキュメントページを表示できます。
@@ -161,6 +189,8 @@ const config: StorybookConfig = {
 export default config;
 ```
 
+`.storybook/main.ts` 変更後は `Storybook` を再起動してください。
+
 ## MyHeader コンポーネントのドキュメントを作成
 
 `Storybook` における `MDX` では、 `markdown` でドキュメントを書きながら任意のストーリーを埋め込むことができます。
@@ -203,9 +233,9 @@ import * as MyHeaderStories from './MyHeader.stories';
 
 ![](https://storage.googleapis.com/zenn-user-upload/b971febd8e77-20221227.png)
 
-特筆すべきは、 `Story` コンポーネントを用いて、これまでに作成したストーリーをドキュメントに埋め込めることでしょう。
+特筆すべきは、 `Story` コンポーネントを用いて、**これまでに作成したストーリーをドキュメントに埋め込める**ことでしょう。
 
-`ArgsTable` のように、 `Storybook` 内で使用されているコンポーネントを `@storybook/blocks` から `import` できます。
+また、`ArgsTable` のように、 `Storybook` 内で使用されているコンポーネントを `@storybook/blocks` から `import` できます。
 
 `vue-docgen-api` とこれらの組み合わせによって、コンポーネントのリッチなドキュメントを簡単に作成できるようになりました。
 

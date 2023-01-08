@@ -3,7 +3,7 @@ title: サンプルアプリケーションの作成
 free: true
 ---
 
-`Storybook` を導入する前に、`Storybook` で描画するためのサンプルコンポーネントを作成します。
+`Storybook` を導入する前に、`Storybook` で描画するためのコンポーネントを３種作成します。
 
 # 作成するコンポーネント
 
@@ -15,27 +15,27 @@ free: true
 |MyHeader|タイトルといくつかの MyButton を表示するヘッダー|
 |MyPage|MyHeader とコンテンツを表示する|
 
-`MyPage` をアプリケーションのルートとすると、最終的に以下のような簡易的なアプリケーションが出来上がります。
+`MyPage` をアプリケーションのルートとすると、以下のような簡易的なアプリケーションが出来上がります。
 
 ![](https://storage.googleapis.com/zenn-user-upload/b45db66583ba-20221225.png)
 
 それでは下位コンポーネントから順に実装していきましょう。
 
 :::message
-以降、 `<script setup>` や `TypeScript` を使用した比較的モダンな Vue コンポーネントを作成します。とはいえ`Storybook` を使うための下準備に過ぎないので、不慣れであっても構わず進めてください。
+以降、 `<script setup>` 及び `TypeScript` を使用した、比較的モダンな `Vue` コンポーネントを作成します。とはいえ`Storybook` を使うための下準備に過ぎないので、不慣れであっても構わず進めてください。
 :::
 
-# MyButton コンポーネント
+# `MyButton` コンポーネント
 
 `MyButton` コンポーネントは、以下の `props` を受け取ります。
 
 |props名|型|役割|
 |----|---|---|
-|label|String|ボタンに表示するテキスト|
-|variant|String|ボタンのスタイル種別で、"primary" "secondary" から指定する|
-|size|String|ボタンのサイズで、"large" "medium" "small" から指定する|
+|`label`|String|ボタンに表示するテキスト|
+|`variant`|String|ボタンのスタイル種別で、`"primary"` `"secondary"` から指定する|
+|`size`|String|ボタンのサイズで、`"large"` `"medium"` `"small"` から指定する|
 
-また、ボタンをクリックすることで `click` イベントが emit されます。
+また、ボタンをクリックすることで `click` イベントが `emit` されます。
 
 ```vue:src/components/MyButton.vue
 <script setup lang="ts">
@@ -105,20 +105,20 @@ button.small {
 </style>
 ```
 
-# MyHeader コンポーネント
+# `MyHeader` コンポーネント
 
 `MyHeader` コンポーネントは、以下の `props` を受け取ります。
 
 |props名|型|役割|
 |----|---|---|
-|isLoggedIn|Boolean|ユーザーがログイン中であるかのフラグ|
+|`isLoggedIn`|Boolean|ユーザーがログイン中であるかのフラグ|
 
 `MyHeader` は、ユーザーのログイン状態に応じてボタンを出し分けます。
 
 - 未ログインの場合:「ログイン」「会員登録」ボタンを表示
 - ログイン済みの場合:「ログアウト」ボタンを表示
 
-それぞれのボタンが押下されると、 `login` `signUp` `logout` のイベントが発火されます。
+それぞれのボタンが押下されると、 `login` `signUp` `logout` のイベントが `emit` されます。
 
 また、ウィンドウサイズが一定より小さい場合は各種ボタンが非表示になります。(モバイルならハンバーガーメニューが出るイメージ)
 
@@ -181,7 +181,7 @@ button + button {
 </style>
 ```
 
-# MyPage
+# `MyPage` コンポーネント
 
 `MyPage` コンポーネントは、 `props` は受け取らずに自身でユーザー情報を管理し、各種認証操作をハンドリングします。(ここでは非常に簡略化していますが、グローバルストアや API を統合するイメージ)
 
@@ -253,7 +253,7 @@ function signUp() {
 
 # 動作確認
 
-アプリケーションルートで `MyPage` コンポーネントを表示するように `App.vue` を以下のように修正します。
+アプリケーションルートで `MyPage` コンポーネントを表示するように `App.vue` を書き直します。
 
 ```vue:src/App.vue
 <script setup lang="ts">
@@ -278,15 +278,6 @@ createApp(App).mount("#app");
 
 この状態で開発環境を起動すれば、３コンポーネントを組み合わせたサンプルアプリケーションを動かすことができます。
 
-```bash
-$ yarn dev
-  VITE v4.0.3  ready in 222 ms
-
-  ➜  Local:   http://127.0.0.1:5173/
-  ➜  Network: use --host to expose
-  ➜  press h to show help
-```
-
-![](https://storage.googleapis.com/zenn-user-upload/b45db66583ba-20221225.png)
+![](https://storage.googleapis.com/zenn-user-upload/27bd7df37e56-20230107.gif)
 
 これでコンポーネントの作成は完了です。しばらくは `Storybook` を使用するため、開発サーバーは終了して構いません。

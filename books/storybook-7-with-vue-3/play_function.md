@@ -3,20 +3,26 @@ title: インタラクションを作成する
 free: true
 ---
 
+# インタラクションについて
+
 本章では `Play function` 機能を用いて、**ストーリーに対するユーザーインタラクションを自動化する**方法を紹介します。
 
 ここでいうインタラクションとは以下のようなユーザー操作を指します。
 
-- DOM 取得
+- DOM の取得/参照
 - 要素のクリック
 - フォームへのキー入力
 
-それらを組み合わせて自動化することで、以下を用意に実現できます。
+それらを組み合わせて自動化することで、以下を容易に実現できます。
 
 - コンポーネントに対して特定の操作した際の状態を再現できる
 - コンポーネントに対して特定の操作する自動テストを書ける([`Jest`](https://jestjs.io/ja/) など)
 
-これまではコンポーネントのユニットテストに別の仕組みが必要だったり、画面上での確認ができないといった問題がありました。`Play function` を使用してそれらを `Storybook` と統合することで、よりフロントエンド開発を `Storybook` に集中させることが出来ます。
+例えばコンポーネントに対して任意の操作をした場合のみ再現できる状態がある時、 `Storybook` を閲覧する人がその手順を理解して再現する必要がありました。
+
+これを `Play function` で自動化することで、操作パターンによる状態をもカタログ化できるようになります。
+
+さらに、これまではコンポーネントのユニットテストに別の仕組みが必要だったり、画面上での確認ができないといった問題がありました。`Play function` を使用してそれらを `Storybook` と統合することで、よりフロントエンド開発を `Storybook` に集中させることが出来ます。
 
 # 下準備
 
@@ -36,7 +42,7 @@ export const decorators: Decorator[] = [];
 
 - ユーザー名、年齢を入力できる
 - 確定ボタン押下で、バリデーション実行後に `submit` イベントを発火する
-- バリデーションエラー発生時に、画面にエラーメッセージを表示する
+- バリデーションエラーが発生した場合、画面にエラーメッセージを表示する
 
 ![](https://storage.googleapis.com/zenn-user-upload/f9a5156f9e24-20221228.png)
 
@@ -182,7 +188,7 @@ const config: StorybookConfig = {
 export default config;
 ```
 
-[`@storybook/testing-library`](https://github.com/storybookjs/testing-library) は、 [`testing-library`](https://testing-library.com/) を `Storybook` 内で使用するためのパッケージです。 `testing-library` は `DOM` に対するテストコードのためのユーティリティぐらいの認識でも大丈夫です。`Play function` 内で、コンポーネント内の　`DOM` を参照、操作するのを簡便化するために使用します。
+[`@storybook/testing-library`](https://github.com/storybookjs/testing-library) は、 [`testing-library`](https://testing-library.com/) を `Storybook` 内で使用するためのパッケージです。 `testing-library` は `DOM` に対するテストコードのためのユーティリティぐらいの認識でも大丈夫です。`Play function` 内で、コンポーネント内の `DOM` を参照、操作するために使用します。
 
 # Play function の作成
 
@@ -190,8 +196,8 @@ export default config;
 
 `SignUpForm` コンポーネントを操作する `Play function` を定義した、２種類のストーリーを定義してみましょう。
 
-- フォームに適切な入力し、 `submit` イベントを発火させる
-- フォームに不適切な入力し、エラーメッセージを表示させる
+- フォームに適切な入力をし、 `submit` イベントを発火させる
+- フォームに不適切な入力をし、エラーメッセージを表示させる
 
 それぞれ `Complete` `Error` というストーリー名で以下のように定義します。
 

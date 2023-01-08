@@ -55,27 +55,29 @@ export const SignUp: Story = {
     label: "会員登録",
   },
 };
+
+export default meta
 ```
 
-`Storybook` を確認すると、以下のように `Login` `SignUp` の２種類のストーリーが追加されて、サイドバーからストーリーを切り替えられることがわかりました。
+`Storybook` を確認すると、`Login` `SignUp` の２種類のストーリーが追加されて、サイドバーからストーリーを切り替えられるようになりました。
 
 ![](https://storage.googleapis.com/zenn-user-upload/eadc6f0b996e-20221225.gif)
 
 # Args
 
-ここで、ストーリーを複数定義するついでに、 `args` というフィールドが追加されました。
+ここで、ストーリーを複数定義するついでに、 `args` というフィールドを使用しました。
 
 前回の例では、 `props` の注入は `<MyButton label="ボタン" />` のように、 `template` にハードコードしていました。
 
-ハードコードでも動くには動きますが、通常は `args` という、`Vue` における `props` を `Storybook` から動的に注入できる仕組みを利用します。
+ハードコードでも動くには動きますが、通常は `args` という、 **`Vue` における `props` を `Storybook` から動的に注入できる仕組み** を利用します。
 
 `args` は `render` 関数に引き渡されますが、これをテンプレートにバインドする必要があるため、 `Composition API` の仕組みに則り、`setup` 関数を使用してバインドしています。
 
 # ストーリーの共通部分を抜き出す
 
-ここで作成した各ストーリーは、 `MyButton` コンポーネントを描画し、 `args` をそのまま `props` に引き渡すことが共通しており、具体的な `args` の値のみが異なっています。
+ここまでで作成した各ストーリーは、「`MyButton` コンポーネントを描画し、 `args` をそのまま `props` に引き渡す」ことまで共通しており、具体的な `args` の値のみが異なっています。
 
-各ストーリーで共通の設定については、`export default` しているメタ情報に一元化できます。 `render` 関数をそこに移動することで、以下のように整理できます。
+各ストーリーで共通の設定については、`export default` で定義しているメタ情報に一元化できます。 `render` 関数をそこに移動することで、以下のように整理できます。
 
 ```ts:src/stories/MyButton.stories.ts
 import MyButton from "../components/MyButton.vue";
@@ -120,7 +122,7 @@ export default meta;
 
 # 問題点
 
-`Login` `SignUp` というストーリーを追加することで、`label` が異なる場合の挙動を確認できました。
+`Login` `SignUp` というストーリーを追加し、`label` が異なる場合の挙動を確認できました。
 
 しかし、 `label` を空にした場合や、長文にした場合はどうなるでしょうか。また、`MyButton` コンポーネントには他にも `variant` `size` といった `props` が存在します。
 

@@ -3,7 +3,7 @@ title: CSS レイアウトをデバッグしやすくする
 free: true
 ---
 
-ここでは残りの `essentials addons` である、 `Measure addon` と `Outline addon` についてまとめて紹介します。
+本章では `essentials addons` に含まれる `Measure addon` と `Outline addon` についてまとめて紹介します。
 
 これらについては百聞は一見に如かずであるため、さっそくインストールしましょう。
 
@@ -32,7 +32,7 @@ const config: StorybookConfig = {
 export default config;
 ```
 
-再起動すると、画面上部のツールバーに `Measure addon` と `Outline addon` それぞれの有効化ボタンが表示され、CSS のレイアウトを可視化出来るようになります。
+`Storybook` を再起動すると、画面上部のツールバーに `Measure` と `Outline` それぞれのトグルボタンが表示され、CSS のレイアウトを可視化出来るようになります。
 
 ![](https://storage.googleapis.com/zenn-user-upload/930f1a9f3e63-20221227.gif)
 
@@ -44,7 +44,7 @@ export default config;
 
 # Outline addon
 
-`Outline addon` は、ストーリーに含まれる各アウトラインを可視化することで、UI 間の整列に狂いがないかのデバッグを行いやすくします。
+`Outline addon` は、ストーリーに含まれる各アウトラインを可視化することで、UI 間の整列に狂いがないかのデバッグを行いやすくなります。
 
 # 関連リンク
 

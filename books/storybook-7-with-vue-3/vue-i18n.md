@@ -2,7 +2,7 @@
 title: Vue I18n での多言語化に対応する
 ---
 
-サービスを海外展開する場合、UI を国際化し、テキストを多言語展開することがあるでしょう。
+サービスを海外展開する場合、UI を国際化し、テキストも多言語対応することがあるでしょう。
 
 本章では、`Vue.js` における国際化・多言語化のデファクトスタンダードといえる、[Vue I18n](https://vue-i18n.intlify.dev/) と `Storybook` を組み合わせる手法を紹介します。
 
@@ -17,7 +17,7 @@ yarn add vue-i18n@9
 `Vue I18n` の詳細については割愛しますが、本章では以下のような多言語対応をします。
 
 - 日本語・英語の二言語をサポート
-- `MyPage` コンポーネント上に表示されるすべての文言を対応
+- `MyPage` コンポーネント上に表示されるすべての文言を対応(子コンポーネント含む)
 - デフォルトは日本語
 
 `src/i18n.ts` を作成し、以下のように i18n を実装します。
@@ -63,7 +63,7 @@ export default i18n;
 ```
 
 :::message
-通常はユーザーエージェントなどを元に、ユーザーの言語設定を決定し、`Vue I18n` にそれを反映するというプロセスをはさみますが、ここでは割愛してハードコードしています。
+通常はユーザーエージェントなどを元にユーザーの言語設定を決定し、`Vue I18n` にそれを反映するというプロセスをはさみますが、ここでは割愛してハードコードしています。
 :::
 
 `createI18n` で作成した I18n の設定は、Vue プラグインの形式になっているため、開発環境で動作確認するために `src/main.ts` も修正します。
@@ -163,7 +163,7 @@ const i18n = createI18n({
 $ yarn dev storybook --port 6006
 ```
 
-以下のようなエラーが発生していることがわかります。
+以下のようなエラーが発生します。
 
 ![](https://storage.googleapis.com/zenn-user-upload/c0810fdc60ac-20221230.png)
 
@@ -183,7 +183,10 @@ import { setup } from "@storybook/vue3";
 
 setup((app) => {
   // app が Vue インスタンスにあたるので Vue I18n インスタンスを注入する
-  app.use(i18n);
+  // 同一の Vue インスタンスに対して setup 関数は複数回実行されるため、既に注入済みかを確認する
+  if (!app.__VUE_I18N__) {
+    app.use(i18n);
+  }
 });
 
 // 以下略
@@ -191,7 +194,7 @@ setup((app) => {
 
 これでストーリーが正しく描画できるようになりました。
 
-現状はデフォルト設定である日本語のまま、変更する手段がないので、その対応をしていきます。
+ただし現状では、デフォルト設定である日本語が表示され、英語に変更する手段がありません。
 
 # Toolbar addon のセットアップ
 
@@ -223,7 +226,7 @@ $ yarn add -D @storybook/addon-toolbars@7.0.0-beta.20
 
 # 言語切り替えメニューを追加する
 
-`Toolbar addon` を使用したツールバーの拡張は `.storybook/preview.ts` 内の `export const globalTypes` で定義します。
+`Toolbar addon` を使用したツールバーの拡張は `.storybook/preview.ts` 内の `globalTypes` で定義します。
 
 `globalTypes` は、各ストーリーごとでなく、 `Storybook` 全体で一意の設定を定義するための key-value ストアです。
 
@@ -255,7 +258,7 @@ export const globalTypes = {
 
 `globalType` を定義して、ツールバーからその設定を変更しても、 `Vue I18n` インスタンスにその変更が反映されていないため何も起こりません。
 
-`globalType` は主に `Decorator` から参照が可能であるため、ストーリーを描画する前に `Vue I18n` インスタンスの設定を書き換えるという `Decorator` を追加します。
+`globalType` は主に `Decorator` から参照します。`Decorator` を使って、ストーリーを描画するたびに、 `globalType` の設定値を参照し、 `Vue I18n` の設定に反映させます。
 
 ```ts:.storybook/preview.ts
 // 前略

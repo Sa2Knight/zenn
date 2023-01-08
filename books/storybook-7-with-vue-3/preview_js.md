@@ -7,15 +7,15 @@ free: true
 
 これまで、 `Viewport addon` や `Background addon` などのアドオンに対する設定を、各ストーリーごとに `export default` 内で定義していました。
 
-しかし、多くの設定はストーリーごとでなく、全ストーリー共通にしたいものです。
+しかし、多くの設定はストーリーごとでなく、`Storybook` 全体で共通設定にしたいものです。
 (あるいは共通のデフォルト設定を定義し、必要に応じてストーリーごとに書き換えるなど)
 
-そのようなストーリーを跨いだ共通定義は、 `.storybook/preview.js` に記述します。
+ストーリーを跨いだ共通定義は、 `.storybook/preview.js` に記述します。
 
 :::message
 `Storybook` には `Manager` ブロックと `Preview` ブロックがあり、 `preview.js` は後者に対する設定を記述するファイルです。
 
-`Preview` ブロックは `iframe` でストーリーを埋め込む役割を持ちますが、本書ではアーキテクチャに深く言及しません。
+`Preview` ブロックは `iframe` でストーリーを埋め込む役割を持つため `preview.js` という名前になっていますが、本書ではアーキテクチャに深く言及しません。
 :::
 
 :::message
@@ -34,15 +34,15 @@ export const decorators = [];
 export const globalTypes = {};
 ```
 
-`parameters` のみ、本書で既に登場していますが、改めて紹介します。
+`parameters` のみ本書で既に登場していますが、改めて紹介します。
 
 |設定名|用途|
 |---|---|
-|parameters|ストーリーごとに割り当てられる key-value 形式のメタデータ|
-|globalTypes|Storybook 全体で一意の設定となる key-value 形式のメタデータ|
-|decorators|ストーリーをラップするラッパーコンポーネント|
+|`parameters`|ストーリーごとに割り当てられる key-value 形式のメタデータ|
+|`globalTypes`|Storybook 全体で一意の設定となる key-value 形式のメタデータ|
+|`decorators`|ストーリーをラップするラッパーコンポーネント|
 
-`parameters` は `globalTypes` と異なり、コンポーネントごと、あるいはストーリーごとに上書き可能かです。
+`parameters` はコンポーネントやストーリーごとに上書き可能なのに対し、`globalTypes` は `Storybook` 全体で一意の設定値になります。
 
 `decorators` `globalTypes` の使い方については以降の章で改めて行いますので、ここでは `preview.js` にてまとめて設定可能であることを理解してもらえれば大丈夫です。
 
