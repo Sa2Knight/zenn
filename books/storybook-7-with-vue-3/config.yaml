@@ -6,7 +6,7 @@ summary: |-
 
   公開時点で Storybook 7 が β 版のため、逐次最新情報を元に内容を更新する予定。
 topics: ["javascript", "vue", "vite", "storybook"]
-published: false
+published: true
 price: 0
 chapters:
   - summary
