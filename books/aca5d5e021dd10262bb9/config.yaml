@@ -3,7 +3,7 @@ allow_override: true
 summary: |-
 
   2023/01/10 追記
-  本書は Storybook 7 のリリースにともない、非推奨となりました。 Storybook 7 版の本も公開したため、そちらをご利用ください。
+  Storybook 7 + Vue 3 版を別途公開しました。使用するバージョンにあわせてどちらかを参照してください。
   https://zenn.dev/sa2knight/books/storybook-7-with-vue-3
 
   ----------
