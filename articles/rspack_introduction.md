@@ -3,7 +3,7 @@ title: "Rust + Webpack = Rspack の紹介"
 emoji: "🦀"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "webpack", "rspack"]
-published: false
+published: true
 ---
 
 # 概要
