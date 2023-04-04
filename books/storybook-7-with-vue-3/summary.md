@@ -12,11 +12,10 @@ free: true
 |パッケージ|バージョン|備考|
 |----|----|----|
 |`Storybook`|7.0.2|モノレポ内の各パッケージ共通|
-|`vue`|3.2.45||
+|`vue`|3.2.47||
 |`vite`|4.2.1||
-|`@vitejs/plugin-vue`|4.0.0||
-|`typescript`|4.9.4||
-|`react` / `react-dom`|18.2.0|Storybook を動かすために必要|
+|`@vitejs/plugin-vue`|4.1.0||
+|`typescript`|4.9.5||
 
 また、 [`Node.js`](https://nodejs.org/ja/) は v16.16.0 を、 [`yarn`](https://yarnpkg.com/) は 1.22.19 を使用します。
 
