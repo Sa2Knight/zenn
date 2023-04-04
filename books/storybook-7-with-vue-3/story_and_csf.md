@@ -7,10 +7,6 @@ free: true
 
 `.stories.js` のようなファイル形式を **CSF (Component Story Format)** と呼びます。
 
-:::message
-厳密には `CSF` を使わずともストーリーの定義は可能ですが、非推奨で廃止予定のため、本書ではストーリーファイル = `CSF` とします。
-:::
-
 以下は前章で作成した、`CSF` で書かれたストーリーファイルです。
 
 ```ts:src/stories/MyButton.stories.ts

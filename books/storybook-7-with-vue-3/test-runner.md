@@ -11,7 +11,7 @@ title: ストーリーを自動テストする
 `Storybook` を用いた自動テストには [`@storybook/test-runner`](https://github.com/storybookjs/test-runner) を使用します。
 
 ```bash
-$ yarn add -D @storybook/test-runner@0.10.0-next.4
+$ yarn add -D @storybook/test-runner@0.10.0
 ```
 
 `test-runner` は、起動している `Storybook` に対して各ストーリーを [Playwright](https://playwright.dev/) を用いて開きます。

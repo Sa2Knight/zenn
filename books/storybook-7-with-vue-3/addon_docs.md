@@ -14,7 +14,7 @@ free: true
 `essentials addons` シリーズはこれで最後になります。
 
 ```bash
-yarn add -D @storybook/addon-docs@7.0.0-beta.20
+yarn add -D @storybook/addon-docs@7.0.2
 ```
 
 ```ts:.storybook/main.ts
@@ -39,7 +39,7 @@ export default config;
 
 # ※ `.vue` ファイルで型エラーが発生している場合
 
-[`VSCode`](https://code.visualstudio.com/) 及び [Volar](https://github.com/johnsoncodehk/volar) を使用している場合、`@storybook/addon-docs` を追加した時点で、`.vue` ファイルで以下のような型エラーが起こりえます。
+[`VSCode`](https://code.visualstudio.com/) 及び旧バージョンの [Volar](https://github.com/johnsoncodehk/volar) を使用している場合、`@storybook/addon-docs` を追加した時点で、`.vue` ファイルで以下のような型エラーが起こりえます。
 
 ![](https://storage.googleapis.com/zenn-user-upload/da93cf1e91c4-20221231.png)
 

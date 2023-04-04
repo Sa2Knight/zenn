@@ -160,10 +160,10 @@ const i18n = createI18n({
 現在の状態で `Storybook` を開き、 `MyHeader` または `MyPage` コンポーネントのストーリーを開いてみましょう。
 
 ```bash
-$ yarn dev storybook --port 6006
+$ yarn storybook dev --port 6006
 ```
 
-以下のようなエラーが発生します。
+以下のようなエラーが発生します。(あるいはコンソールエラーが出力される)
 
 ![](https://storage.googleapis.com/zenn-user-upload/c0810fdc60ac-20221230.png)
 
@@ -207,10 +207,15 @@ setup((app) => {
 ツールバーは `@storybook/addon-toolbars` を使用すれば任意にカスタマイズし、ツールバーで選択された値を参照もできるようになるため、まずはアドオンを追加します。
 
 ```bash
-$ yarn add -D @storybook/addon-toolbars@7.0.0-beta.20
+$ yarn add -D @storybook/addon-toolbars@7.0.2
 ```
 
 ```ts:.storybook/main.ts
+import { StorybookConfig } from "@storybook/vue3-vite";
+
+const config: StorybookConfig = {
+  framework: "@storybook/vue3-vite",
+  stories: ["../src/**/*.stories.@(js|ts)", "../src/**/*.mdx"],
   addons: [
     "@storybook/addon-controls",
     "@storybook/addon-actions",
@@ -222,6 +227,9 @@ $ yarn add -D @storybook/addon-toolbars@7.0.0-beta.20
     "@storybook/addon-interactions",
     "@storybook/addon-toolbars", // 追加
   ],
+};
+
+export default config;
 ```
 
 # 言語切り替えメニューを追加する

@@ -5,28 +5,6 @@ free: true
 
 本章では、コンポーネントのストーリーを作成し、`Storybook` を本格的に動かしていきます。
 
-# アンビエント宣言の追加
-
-出鼻をくじくようですが、ストーリーファイルを作成する前に、 `MyButton.vue` のような `.vue` ファイルを `.ts` ファイルから `import` できるように、アンビエント宣言を追加します。
-
-`src/vite-env.d.ts` の内容を以下のようにしてください。
-
-```ts:src/vite-env.d.ts
-/// <reference types="vite/client" />
-
-declare module "*.vue" {
-  import type { DefineComponent } from "vue";
-  const component: DefineComponent<{}, {}, any>;
-  export default component;
-}
-```
-
-これによって、 `.ts` ファイルから `.vue` ファイルを `import` する際に、そのモジュールが `Vue` コンポーネントであることを `TypeScript` に伝えます。
-
-:::message
-この宣言によって、すべての `Vue` コンポーネントが空のコンポーネントと推論されてしまいますが、他の手段が見当たりませんでした。なにか良いプラクティスがあれば教えて下さい。
-:::
-
 # ストーリーファイルの作成
 
 はじめの一歩として、 `MyButton` コンポーネントのストーリーを作成しましょう。

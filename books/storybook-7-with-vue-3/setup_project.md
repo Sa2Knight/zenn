@@ -20,7 +20,7 @@ $ cd storybook-7-vue-3-sample/
 $ yarn install
 $ yarn dev
 
-  VITE v4.0.3  ready in 437 ms
+  VITE v4.2.1  ready in 437 ms
 
   ➜  Local:   http://127.0.0.1:5173/
   ➜  Network: use --host to expose

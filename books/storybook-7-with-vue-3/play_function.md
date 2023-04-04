@@ -162,7 +162,7 @@ export default meta;
 下準備も整ったので、アドオン及びパッケージをインストールします。
 
 ```bash
-$ yarn add -D @storybook/addon-interactions@7.0.0-beta.20 @storybook/testing-library
+$ yarn add -D @storybook/addon-interactions@7.0.2 @storybook/testing-library
 ```
 
 `@storybook/addon-interactions` は `Storybook` のアドオンであるため、例によって `.storybook/main.ts` に追記します。
@@ -250,37 +250,6 @@ export default meta;
 このように `Play function` を使用することで、**実際に操作しないと再現できないコンポーネントの状態**を `Storybook` 上で用意に作成できます。
 
 この仕組みは自動テストとの相性が抜群です。以降の章では、作成したストーリーを `Storybook` で確認するだけでなく、自動テストと統合して振る舞いが変わらないことを担保する方法も紹介します。
-
-# ※ `global is not defined` が発生する場合
-
-バージョン、環境によっては、以下のようなエラーが発生します。
-
-![](https://storage.googleapis.com/zenn-user-upload/ba38ff8d9278-20230101.png)
-
-本来は `Node.js` で実行される想定のコードが `Storybook` を通じてブラウザ上で動作されるため、ブラウザに定義されていない `global` を `window` で再定義して回避できます。
-
-```ts:.storybook/main.ts
-import { StorybookConfig } from "@storybook/vue3-vite";
-
-const config: StorybookConfig = {
-  framework: "@storybook/vue3-vite",
-  stories: ["../src/**/*.stories.@(js|ts)", "../src/**/*.mdx"],
-  addons: [
-    // 中略
-  ],
-  viteFinal: (config) => {
-    return {
-      ...config,
-      define: {
-        ...config.define,
-        global: "window",
-      },
-    };
-  },
-};
-
-export default config;
-```
 
 # 関連リンク
 

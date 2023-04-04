@@ -30,19 +30,19 @@ $ yarn storybook dev --port 6006
 @storybook/cli v7.0.0-beta.20
 
 info => Starting manager..
-╭────────────────────────────────────────────────────╮
-│                                                    │
-│   Storybook 7.0.0-beta.20 for vue3-vite started    │
-│   25 ms for manager and 454 ms for preview         │
-│                                                    │
-│    Local:            http://localhost:6006/        │
-│    On your network:  http://192.168.0.27:6006/     │
-│                                                    │
-╰────────────────────────────────────────────────────╯
+╭───────────────────────────────────────────────────╮
+│                                                   │
+│   Storybook 7.0.2 for vue3-vite started           │
+│   22 ms for manager and 692 ms for preview        │
+│                                                   │
+│    Local:            http://localhost:6006/       │
+│    On your network:  http://192.168.0.28:6006/    │
+│                                                   │
+╰───────────────────────────────────────────────────╯
 ```
 
 http://localhost:6006 にアクセスし、以下のような画面が表示されていれば成功です。
-まだストーリーを定義していないのでエラーは発生していますが、 `Storybook` の起動まで 25ms という高速さは既に実感できます。
+まだストーリーを定義していないのでエラーは発生していますが、 `Storybook` の起動まで 22ms という高速さは既に実感できます。
 
 :::message
 当然、起動時間はお使いの環境などで上下します。

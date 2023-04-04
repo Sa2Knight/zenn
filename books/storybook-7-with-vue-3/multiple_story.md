@@ -11,8 +11,16 @@ free: true
 
 `MyPage` コンポーネントは、`label` に文字列を指定することで、ボタンのテキストを変更できます。現状の "ボタン" 以外にも、他のテキストを使ったストーリーを用意してみましょう。
 
-```ts:src/stories/counter.stories.ts
-// ...前略
+```ts:src/stories/MyButton.stories.ts
+import MyButton from "../components/MyButton.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+
+type Story = StoryObj<typeof MyButton>;
+
+const meta: Meta<typeof MyButton> = {
+  title: "MyButton",
+  component: MyButton,
+};
 
 // 「ボタン」
 export const Default: Story = {
@@ -56,7 +64,7 @@ export const SignUp: Story = {
   },
 };
 
-export default meta
+export default meta;
 ```
 
 `Storybook` を確認すると、`Login` `SignUp` の２種類のストーリーが追加されて、サイドバーからストーリーを切り替えられるようになりました。

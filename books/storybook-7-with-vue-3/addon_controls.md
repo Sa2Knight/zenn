@@ -10,7 +10,7 @@ free: true
 まずはアドオンをインストールしましょう。
 
 ```bash
-$ yarn add -D @storybook/addon-controls@7.0.0-beta.20
+$ yarn add -D @storybook/addon-controls@7.0.2
 ```
 
 インストールしたアドオンを利用するためには、 `Storybook` の設定ファイルに、 `addons` フィールドを追加します。

@@ -9,7 +9,7 @@ free: true
 
 `npx sb init` のようなディレクトリ構成に基づいた自動セットアップコマンドも用意されていますが、今回は以下の理由によりこれを使用せずに手動でセットアップしていきます。
 
-- 執筆時点で v7 が β バージョンであるため、正しく動作しない
+- プレリリース状態の最新バージョンが使用できない場合がある
 - 推奨設定がすべて適用されるため、意図せず不要なパッケージまでインストールされてしまう
 - パッケージが自動で追加、初期設定されるため、それらを理解せずに雰囲気で使ってしまう
 
@@ -18,7 +18,7 @@ free: true
 まず、`Storybook` の起動やビルドをコマンドラインで行うための CLI をインストールします。
 
 ```bash
-$ yarn add -D storybook@7.0.0-beta.20
+$ yarn add -D storybook@7.0.2
 ```
 
 これで `yarn storybook <command>` の形式で `Storybook` を動かす準備ができました。
@@ -28,7 +28,7 @@ $ yarn add -D storybook@7.0.0-beta.20
 本書では `Vue 3` 及び `Vite` を使用するので、それにあわせて `@storybook/vue3-vite` をインストールします。
 
 ```bash
-$ yarn add -D @storybook/vue3-vite@7.0.0-beta.20
+$ yarn add -D @storybook/vue3-vite@7.0.2
 ```
 
 `@storybook/vue3-vite` は以下のパッケージを内包したプリセットになっています。
@@ -44,7 +44,7 @@ $ yarn add -D @storybook/vue3-vite@7.0.0-beta.20
 
 # `React`
 
-本書では `Vue` を使うため違和感がありますが、`Storybook` には `React` が使用されているため、 別途 `React` のインストールが必要になります。
+本書では `Vue` を使うため違和感がありますが、`Storybook` の一部アドオンでは `React` が使用されているため、 別途 `React` のインストールが必要になります。
 
 ```bash
 $ yarn add -D react react-dom
