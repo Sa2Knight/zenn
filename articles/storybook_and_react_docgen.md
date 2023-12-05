@@ -235,9 +235,117 @@ export const MyComponent: React.FC<Props> = ({ literal, object, array = [], func
 
 `react-docgen-typescript` と比べると機能が限られるとは言われていますが、これだけ見ると十分実用的そうですね。
 
-なお、上記コードは [Playground](https://react-docgen.dev/playground) を用いて生成しましたが、CLI を使用することで手元でも確認可能です。
+# react-docgen を使ってみる
+
+`react-docgen` は基本となるライブラリと、それを用いた CLI の2種類のパッケージが公開されています。
+
+CLI は以下のように使用することで、簡単にメタデータを抽出することができます。
 
 ```bash
 $ yarn add -D @react-docgen/cli
-$ yarn react-docgen hoge.ts -o result.json --pretty
+$ yarn react-docgen component.ts -o result.json --pretty
 ```
+
+今回は、より中身を深ぼるために、ライブラリを直接使用してみましょう。
+
+```bash
+$ yarn add react-docgen
+```
+
+`react-docgen` では様々なカスタマイズが可能ではありますが、ここではシンプルにデフォルトの挙動のまま、 `parse` 関数を使用してみます。
+
+```ts
+import { parse } from 'react-docgen'
+
+const code = `
+type Props = {
+  name?: string
+}
+
+/** My first component */
+export const MyComponent: React.FC<Props> = ({ name = 'no_name'} ) => {
+  return <div>Hello, {name}!</div>
+}
+`
+
+const documentation = parse(code)
+
+console.log(documentation)
+```
+
+`parse` 関数にソースコードの文字列を渡すだけで、以下のようなパース結果のオブジェクトを取得できます。基本はこれだけですね。
+
+```ts
+[
+  {
+    "description": "My first component",
+    "displayName": "MyComponent",
+    "methods": [],
+    "props": {
+      "name": {
+        "defaultValue": {
+          "value": "'no_name'",
+          "computed": false
+        },
+        "required": false
+      }
+    }
+  }
+]
+```
+
+では、この `parse` 関数を軸にその仕組みを追ってみましょう。
+
+# react-docgen の仕組み
+
+`react-docgen` は、どのようにして React コンポーネントのソースコードからメタデータを抽出しているのでしょうか。
+
+`package.json` を覗いてみると、`babel` が使用されており、これを用いて AST を生成してそこから情報を抜き出すことが想像できます。
+
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/package.json#L41-L52
+
+それを踏まえた上で、先程使用した `parse` 関数について調べてみます。
+
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/parse.ts#L43-L48
+
+やはり `parse` 関数では、はじめにコードを `babel` を用いてパースし、AST を取得しているように見えます。
+
+`babelParser` 関数の中身も、細かいオプションの調整はあるものの、基本的には `@babe/core` の `parseSync` を呼び出しているのみです。
+
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/babelParser.ts#L71-L88
+
+ちなみに `babel` と言えばコードのトランスパイルを想像しますが、それは Babel プラグインの機能であり、 `@babel/core` の持つ基本的な昨日は AST を生成し、(必要に応じて)それを書き換えるインタフェースを提供することです。
+
+`babel` によって生成された AST は、`FileState` という、`react-docgen` 側で定義されたインスタンスに変換され、`runResolver` 関数によってコンポーネントの情報が抽出されます。
+
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/parse.ts#L50-L56
+
+上記コードにおける `importer` はソースコード内で他のモジュールへの依存(`import`)がある場合に、適切に該当ファイルを参照し、そちらも AST 化し、`export` している型定義などを参照できるようにします。
+
+`resolver` は、AST 全体から、コンポーネント定義に関わるノードを見つける関数で、AST からクラスコンポーネントや関数コンポーネント、ESM 形式や CJS 形式など様々なパターンを抽出します。
+
+最後に `handlers` を使用して、コンポーネント定義に関わる AST から情報を抜き出します。
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/parse.ts#L62
+
+`handlers` はデフォルトで以下のようなものが使用されます。
+
+https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/config.ts#L50-L62
+
+例えば [displayNameHandler](https://react-docgen.dev/docs/reference/handlers/display-name-handler) は、クラス名や関数名などを元に、コンポーネント名の情報を抜き出し、 [defaultPropsHandler](https://react-docgen.dev/docs/reference/handlers/default-props-handler) は props のデフォルト値にあたる情報を抜き出します。
+
+以上のように、 `react-docgen` では `Babel` を用いて生成した AST をベースに、 `importer` `resolver` `handler` を経て、コンポーネントのメタデータを抽出しているようです。
+
+```mermaid
+graph LR
+    code[code] -->|Babel| ast1[AST]
+    ast1 --> fs[FileState]
+    fs -->|Importer| otherFiles[Other Files]
+    otherFiles -->|Babel| ast2[AST]
+    ast2 --> fs
+    fs -->|Resolver| cd[Component Definitions]
+    cd -->|Handler| result[Result]
+```
+
+# Storybook での使用例
+
+さて、話が戻りまして、 `react-docgen` を Storybook ではどのように使用しているかです。
