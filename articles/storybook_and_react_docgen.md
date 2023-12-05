@@ -384,6 +384,25 @@ Storybook で描画する React コンポーネント内に、`__docgenInfo` と
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/utils/docgenInfo.ts#L14-L16
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/extractDocgenProps.ts#L71-L82
 
+事実、ストーリーファイルにて以下のように描画対象コンポーネントの `__docgenInfo` を参照することができました。
+
+```tsx:component.stories.tsx
+import { Meta, StoryObj } from '@storybook/react'
+import { SampleComponent } from './SampleComponent'
+
+export default {
+  title: 'SampleComponent',
+  component: SampleComponent,
+  render: (args) => {
+    // react-docgen の parse 結果が出力される
+    console.log(SampleComponent.__docgenInfo)
+    return <SampleComponent {...args} />
+  },
+  args: {
+  },
+} satisfies Meta<typeof SampleComponent>
+```
+
 # 締め
 
 本記事では、Storybook 上で React コンポーネントの型情報を自動で取得するために使用している `react-docgen` について深掘りました。
