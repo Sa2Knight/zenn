@@ -348,4 +348,46 @@ graph LR
 
 # Storybook での使用例
 
-さて、話が戻りまして、 `react-docgen` を Storybook ではどのように使用しているかです。
+さて、Storybook では、 `Controls` の機能の一環として `react-docgen` を使用しているとのことでした。
+
+`react-doc-gen` を使用した仕組みは、Storybook のビルドに `Webpack` を使用している場合はローダーとして、`Vite` を使用している場合は Vite プラグインとして提供されますが、ここでは前者について深掘ります。
+
+:::message
+ここからは `Webpack` に関する用語・概念が登場しますが、詳しくない方も雰囲気で読んでいただいて大丈夫です。
+:::
+
+`Webpack` 向けのローダーとして、 `react-docgen-loader` が提供されています。
+
+https://github.com/storybookjs/storybook/blob/3bcca2d4765c1f6b8aaf87ce70916d51cac743c1/code/presets/react-webpack/src/loaders/react-docgen-loader.ts
+https://github.com/storybookjs/storybook/blob/3bcca2d4765c1f6b8aaf87ce70916d51cac743c1/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L61-L116
+
+ローダーは簡単に言うと、`Webpack` によってモジュール解決が行われる際に、拡張子に応じた前処理を挟むことが出来る仕組みです。例えば `ts-loader` の場合、`.ts` ファイルの依存解決時に `tsc` によってコンパイルを行うといった仕組みです。
+
+`react-docgen-loader` をいつ使用するかは、Storybook が使用する `Webpack` の設定ファイルから確認できます。
+
+https://github.com/storybookjs/storybook/blob/3bcca2d4765c1f6b8aaf87ce70916d51cac743c1/code/presets/react-webpack/src/framework-preset-react-docs.ts#L22-L45
+
+`reactDocgen` オプションの値によって使用するローダーが決定しており、`/\.(cjs|mjs|tsx?|jsx?)$/` を満たすファイルを解決する際に `react-docgen-loader` が使用されることがわかります。
+
+ローダー側の実装に戻ります。ローダーでは当然 `react-docgen` を使用して、`Webpack` が解決しようとしているファイルのソースを `parse` 関数に渡し、メタデータを取り出しています。
+
+https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L73-L84
+
+取り出したメタデータをJSON文字列化し、なんと元のソースコードを拡張して変数に代入するようにコードを改変しています。なんとパワフルな。
+
+https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L86-L94
+
+Storybook で描画する React コンポーネント内に、`__docgenInfo` という変数が生える形になりました。
+
+こうなってしまえば、あとは描画の際にいくらでも参照可能です。型情報はこのように取得されていたんですね。
+
+https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/utils/docgenInfo.ts#L14-L16
+https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/extractDocgenProps.ts#L71-L82
+
+# 締め
+
+本記事では、Storybook 上で React コンポーネントの型情報を自動で取得するために使用している `react-docgen` について深掘りました。
+
+普段からお世話になっている Storybook ですが、その仕組みはブラックボックスになりがちで、バージョンアップにも積極的な追従が出来ていないことが多かったです。
+
+今回のように、テーマを決めて仕組みを深ぼることで、より Storybook を身近に感じ、バージョンアップに追従した最適な構成を自ら設定できるようになりそうなので、OSS コードリーディングも含めて今後も継続的に取り組めたらなと思います。
