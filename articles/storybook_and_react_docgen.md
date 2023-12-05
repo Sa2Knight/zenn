@@ -1,5 +1,5 @@
 ---
-title: "Storybook と react-docgen とパフォーマンス"
+title: "Storybook と react-docgen"
 emoji: "📕"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Storybook", "React"]
