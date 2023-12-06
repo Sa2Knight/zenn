@@ -418,6 +418,8 @@ export default {
 
 頻繁に実行されるからこそ、`react-docgen-typescript` から `react-docgen` に乗り換えることで塵も積もればのパフォーマンス改善に繋がったのでしょう。
 
+パフォーマンス文脈で言うなら、 `Babel` でパースするよりも、[swc](https://swc.rs/) や [oxc](https://oxc-project.github.io/) のような Rust で書かれたパーサーを使うようになったらもっと早くなるんだろうかと考えたりもできますね。
+
 # 締め
 
 本記事では、`Storybook` 上で `React` コンポーネントの型情報を自動で収集するために使用している `react-docgen` について深掘りました。
