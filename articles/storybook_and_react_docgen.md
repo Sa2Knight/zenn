@@ -3,7 +3,7 @@ title: "Storybook と react-docgen の仕組みを追う"
 emoji: "📕"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Storybook", "React"]
-published: false
+published: true
 ---
 
 # 概要
