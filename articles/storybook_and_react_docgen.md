@@ -1,5 +1,5 @@
 ---
-title: "Storybook と react-docgen の裏側"
+title: "Storybook と react-docgen の仕組みを追う"
 emoji: "📕"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Storybook", "React"]
@@ -10,16 +10,16 @@ published: false
 
 本記事は、[SmartHR Advent Calendar 2023 シリーズ2](https://qiita.com/advent-calendar/2023/smarthr) の7日目です。
 
-本記事では、[Storybook](https://storybook.js.org/) を [React](https://ja.react.dev/blog/2023/03/16/introducing-react-dev) プロジェクトで使用した場合に内部的に使用される [react-docgen](https://github.com/reactjs/react-docgen) について紹介し、その仕組みを深ぼることで `Storybook` の理解を深めるようという記事です。
+本記事では、[Storybook](https://storybook.js.org/) を [React](https://ja.react.dev/) プロジェクトで使用した場合に内部的に使用される [react-docgen](https://github.com/reactjs/react-docgen) について紹介し、その仕組みを深ぼることで `Storybook` の理解を深めようという記事です。
 
 # バージョン情報
 
 - Storybook v7.6.3 (monorepo)
 - react-docgen v7.0.1
 
-# Storybook 7.6.0 のリリース
+# Storybook v7.6.0 のリリース
 
-先日、`Storybook` v7.6.0 がリリースされ、変更内容をまとめた以下ブログが公開されました。
+先日、`Storybook` v7.6.0 がリリースされ、変更内容をまとめたブログが公開されました。
 https://storybook.js.org/blog/storybook-7-6/
 
 v7.6.0 は、各種パフォーマンスとUXの改善に加え、次のメジャーバージョンに向けたレガシー機能の非推奨化が中心となっており、きたる v8 にむけた v7 最後のマイナーバージョンになります。
@@ -40,7 +40,7 @@ https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#react-docgen-com
 >
 > In Storybook 7, we used react-docgen-typescript to analyze React component props and auto-generate controls. In Storybook 8, we have moved to react-docgen as the new default.
 
-これによると、[Controls](https://storybook.js.org/docs/essentials/controls) に表示する `React` コンポーネントのメタデータ(propsの型定義など)を解析するために、これまでは `react-docgen-typescript` を使用していましたが、`Storybook` v8 からはデフォルトで `react-docgen` が使用されるように変わるそうです。
+これによると、[Controls](https://storybook.js.org/docs/essentials/controls) に表示する `React` コンポーネントのメタデータ(propsの型定義など)を解析するために、これまでは [react-docgen-typescript](https://github.com/styleguidist/react-docgen-typescript) が使用されていましたが、`Storybook` v8 からはデフォルトで `react-docgen` が使用されるよう変わるようです。
 
 `Storybook` における `Controls` とは、コンポーネントの props を画面上から差し替え、リアルタイムに描画結果を確認できる仕組みです。普段意識していない方でも、いつのまにかお世話になっている機能でしょう。(以下gif参照)
 
@@ -48,12 +48,12 @@ https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#react-docgen-com
 
 `react-docgen-typescript` は、元々 `react-docgen` が TypeScript に対応していなかったため、TypeScript 特化版として開発されたようですが、現在では `react-docgen` でも最低限 の TypeScript をサポートするようになったため、乗り換え可能になったように見えます。
 
-MIGRATION.md には以下の記載もありました。
+マイグレーションガイドには以下の記載もありました。
 
 > react-docgen is dramatically more efficient, shaving seconds off of dev startup times. However, it only analyzes basic TypeScript constructs.
 > We feel react-docgen is the right tradeoff for most React projects. However, if you need the full fidelity of react-docgen-typescript, you can opt-in using the following setting in .storybook/main.js:
 
-端的に言うなら、
+端的に言うなら
 
 - `react-docgen` は高速だがシンプル
 - `react-docgen-typescript` は低速だが多機能
@@ -66,7 +66,7 @@ https://github.com/styleguidist/react-docgen-typescript/issues/494
 
 `Storybook` 内で使用するパッケージの切り替えは、設定ファイルにて以下のように出来ます。
 
-```ts
+```ts:.storybook/main.js
 export default {
   typescript: {
     reactDocgen: 'react-docgen', // or react-docgen-typescript
@@ -82,13 +82,13 @@ export default {
 |7.6.0|`react-docgen-typescript`|
 |8.0.0|`react-docgen`|
 
-実際に手元のプロジェクトにて `react-docgen` を使用するように変更してみたところ、初回起動時間が半分とまでは行きませんでしたが、十分な高速化を体感することができました。
+実際に手元のプロジェクトにて `react-docgen` を使用するように変更してみたところ、初回起動時間が半分とまでは行かずとも、十分な高速化を体感することができました。
 
 ここからは、今後デフォルトとなる `react-docgen` について深掘りしてみましょう。
 
 # react-docgen について
 
-[react-docgen](https://github.com/reactjs/react-docgen) は、`React` コンポーネントのソースコードから、props の型定義などのコンポーネントメタデータを抽出し、JSON などで出力できるツールです。
+`react-docgen` は、`React` コンポーネントのソースコードから、props の型定義などのコンポーネントメタデータを抽出し、JSON などで出力できるツールです。
 
 https://github.com/reactjs/react-docgen
 
@@ -227,7 +227,7 @@ export const MyComponent: React.FC<Props> = ({ literal, object, array = [], func
 ]
 ```
 
-上記の通り、 React コンポーネントのソースコード内で定義されている情報から、以下のようなメタデータが抽出できます。
+上記の通り、 `React` コンポーネントのソースコード内で定義されている情報から、以下のようなメタデータが抽出できます。
 
 - コンポーネント名
 - ドキュメンテーションコメント
@@ -302,7 +302,7 @@ console.log(documentation)
 
 # react-docgen の仕組み
 
-`react-docgen` は、どのようにして React コンポーネントのソースコードからメタデータを抽出しているのでしょうか。
+`react-docgen` は、どのようにして `React` コンポーネントのソースコードからメタデータを抽出しているのでしょうか。
 
 `package.json` を覗いてみると、[Babel](https://babeljs.io/) を使用してAST を生成し、そこから情報を抜き出していることが想像できます。
 
@@ -319,14 +319,14 @@ https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd92865
 https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/babelParser.ts#L71-L88
 
 :::message
-ちなみに `babel` と言えばコードのトランスパイルを想像しますが、それは Babel プラグインの機能であり、 `@babel/core` の持つ基本的な昨日は AST を生成し、(必要に応じて)それを書き換えるインタフェースを提供することです。
+ちなみに `babel` と聞くとモダンJavaScriptへのトランスパイルといった機能を想像しますが、それは Babel プラグインの機能であり、 `@babel/core` の持つ基本的な機能は AST を生成し、(必要に応じて)それを書き換えるインタフェースを提供することです。
 :::
 
 `babel` によって生成された AST は、`FileState` という、`react-docgen` 側で定義されたクラスのインスタンスに変換され、`runResolver` 関数によってコンポーネントの情報が抽出されます。
 
 https://github.com/reactjs/react-docgen/blob/d82af943c6953920bfb2850552cafd9286531e98/packages/react-docgen/src/parse.ts#L50-L56
 
-上記コードにおける `importer` は、ソースコード内で他のモジュールへの依存(`import`)がある場合に、適切に該当ファイルを探索し、そちらも AST 化して型定義を抜き出します。これによって、ソースコード内には直接含まれていない、外部モジュールに依存した型も解決できるようです。
+上記コードにおける `importer` は、ソースコード内で他のモジュールへの依存(≒`import`)がある場合に、適切に該当ファイルを探索し、そちらも AST 化して型情報を抜き出します。これによって、ソースコード内には直接含まれていない、外部モジュールに依存した型も解決できるようです。
 
 `resolver` は、AST 全体からコンポーネント定義に関わるノードを見つける関数で、AST からクラスコンポーネントや関数コンポーネント、ESM 形式や CJS 形式など様々なパターンを抽出します。
 
@@ -354,44 +354,48 @@ graph LR
 
 # Storybook での使用例
 
-さて、`Storybook` では `Controls` の機能の内部で `react-docgen` を使用しているとのことでした。
+さて、`Storybook` では `Controls` の機能の内部で `react-docgen` を使用しているとのことでした。具体的にどのように使用しているのでしょうか。
 
 `react-doc-gen` を使用した仕組みは、`Storybook` のビルドに [Webpack](https://webpack.js.org/) を使用している場合はローダーとして、[Vite](https://ja.vitejs.dev/) を使用している場合はプラグインとして提供されます。ここでは `Webpack` の場合を深掘ります。
 
 :::message
-ここからは `Webpack` に関する用語・概念が登場しますが、詳しくない方も雰囲気で読んでいただいて大丈夫です。
+ここからは `Webpack` に関する用語・概念が登場しますが、詳しくない方も雰囲気で読んでいただいて大丈夫です。また、`Vite` を使用する場合も大きな違いはありません。
 :::
 
-[@storybook/react-webpack5](https://www.npmjs.com/package/@storybook/react-webpack5) といったパッケージには、`Webpack` 向けのローダーとして、 `react-docgen-loader` が提供されています。
+[@storybook/react-webpack5](https://www.npmjs.com/package/@storybook/react-webpack5) では、`Webpack` 向けのローダーとして、 `react-docgen-loader` が提供されています。
 
 https://github.com/storybookjs/storybook/blob/3bcca2d4765c1f6b8aaf87ce70916d51cac743c1/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L61-L116
 
-ローダーは簡単に言うと、`Webpack` によってモジュール解決が行われる際に、対象ファイルの拡張子に応じてプリプロセスを挟むことが出来る仕組みです。
+ローダーは簡単に言うと、`Webpack` によってモジュール解決が行われる際に、対象ファイルの拡張子に応じてプリプロセスを挟むことで、`JavaScript` として解釈可能なよう変換を行う仕組みです。
 
-例えば [ts-loader](https://github.com/TypeStrong/ts-loader) の場合、`.ts` ファイルの依存解決時にコンパイルや型チェックを行うといった仕組みです。
+例えば [ts-loader](https://github.com/TypeStrong/ts-loader) の場合、`.ts` ファイルなどの依存解決時にコンパイルや型チェックを行うといった仕組みです。
 
 `react-docgen-loader` がどのファイルに対して使用されるかは、 `Webpack` の設定ファイルから確認できます。以下は `Storybook` にて `React` プロジェクトを `Webpack` でビルドする際のデフォルトの設定ファイルです。
 
 https://github.com/storybookjs/storybook/blob/3bcca2d4765c1f6b8aaf87ce70916d51cac743c1/code/presets/react-webpack/src/framework-preset-react-docs.ts#L22-L45
 
-`reactDocgen` オプションの値によって使用するローダーが決定しており、`/\.(cjs|mjs|tsx?|jsx?)$/` を満たすファイルを解決する際に `react-docgen-loader` が使用されることがわかります。
+`.storybook/main.js` で設定した `reactDocgen` オプションの値によって使用するローダーが決定しており、`reactDocgen: "react-docgen"` が設定されている場合、`/\.(cjs|mjs|tsx?|jsx?)$/` を満たすファイルを解決する際に `react-docgen-loader` が使用されることがわかります。
 
 ローダー側の実装に戻ります。ローダーでは当然 `react-docgen` を使用して、`Webpack` が解決しようとしているファイルのソースを `parse` 関数に渡し、メタデータを取り出しています。
 
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L73-L84
 
-取り出したメタデータをJSON文字列化し、**なんと元のソースコードを拡張して変数に代入するようにコードを改変しています。なんとパワフルな。**
+ここで、取り出したメタデータをJSON文字列化し、**なんと元のソースコードを拡張して変数に代入するようにコードを改変しています。なんとパワフルな。**
 
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/presets/react-webpack/src/loaders/react-docgen-loader.ts#L86-L94
 
-Storybook で描画する React コンポーネント内に、`__docgenInfo` というフィールドが生える形になりました。
+`Storybook` で描画する `React` コンポーネント内に、`__docgenInfo` というフィールドが生える形になりました。
 
 こうなってしまえば、あとは描画の際にいくらでも参照可能です。型情報はこのように取得されていたんですね。
 
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/utils/docgenInfo.ts#L14-L16
 https://github.com/storybookjs/storybook/blob/afc4c2f4cfc23739b5086a5294eb52e8706d0925/code/lib/docs-tools/src/argTypes/docgen/extractDocgenProps.ts#L71-L82
 
-事実、ストーリーファイルにて以下のように描画対象コンポーネントの `__docgenInfo` を参照することができました。
+:::message
+余談ですが、上記コード内のコメントでも触れられているように、[Vue.js](https://ja.vuejs.org/) においても [vue-docgen-api](https://www.npmjs.com/package/vue-docgen-api) という似たような仕組みがあります。
+:::
+
+ストーリーファイルにて以下のように描画対象コンポーネントの `__docgenInfo` にアクセスすることで、 `react-docgen` の `parse` 結果が取得できることがわかります。
 
 ```tsx:component.stories.tsx
 import { Meta, StoryObj } from '@storybook/react'
@@ -410,13 +414,13 @@ export default {
 } satisfies Meta<typeof SampleComponent>
 ```
 
-ここまで確認した仕組み上、`Webpack` にてビルドされる全ての `js` `ts` `jsx` `tsx` などのファイルに対して `react-docgen` での `parse` が実行されることがわかります。
+ここまで確認したように、`Storybook` では `Webpack` にてビルドされる全ての `js` `ts` `jsx` `tsx` などのファイルに対して `react-docgen` での `parse` が実行されることがわかります。
 
 頻繁に実行されるからこそ、`react-docgen-typescript` から `react-docgen` に乗り換えることで塵も積もればのパフォーマンス改善に繋がったのでしょう。
 
 # 締め
 
-本記事では、`Storybook` 上で `React` コンポーネントの型情報を自動で取得するために使用している `react-docgen` について深掘りました。
+本記事では、`Storybook` 上で `React` コンポーネントの型情報を自動で収集するために使用している `react-docgen` について深掘りました。
 
 普段からお世話になっている `Storybook` ですが、その仕組みはブラックボックスになりがちで、バージョンアップにも積極的な追従が出来ていないことが多かったです。
 
