@@ -137,7 +137,7 @@ export default defineConfig({
 
 ファイル名は違えど、実態は `Vite` の設定ファイルと同じであるため、`Vitest` 用の設定は `test` フィールドに記述します。
 
-## グローバルAPI を利用できるようにする
+## グローバルAPI を有効化する
 
 [globals](https://vitest.dev/config/#globals) は、 `describe` や `test`, `beforeEach` といったテスト用の API を、テストコード内で `import` することなく使えるようにする設定です。
 
@@ -155,7 +155,7 @@ export default defineConfig({
 
 グローバルAPIの多くは `Jest` と互換性を持っているため、これだけで既存のテストコードの多くは動くようになります。
 
-## グローバルAPI の型解決を行えるようにする
+## グローバルAPI の型解決をする
 
 前述の `globals: true` によって、テストコード上で `describe` などのグローバルAPIが利用できるようになりました。
 
@@ -320,7 +320,7 @@ describe('hogehoge のテスト', () => {
 Error: No test found in suite hogehoge のテスト
 ```
 
-## E2E テストのコードは `Vitest` で実行しないようにする
+## E2E テストのコードは除外する
 
 今回移行を行ったプロジェクトでは、[Playwright](https://playwright.dev/) で作成している E2E テストのコードも `.spec.ts` の形式で配置されています。
 
