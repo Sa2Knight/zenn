@@ -3,7 +3,7 @@ title: "Vite は使ってないけど Jest を Vitest に移行する"
 emoji: "🌟"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["vite", "vitest", "jest"]
-published: false
+published: true
 ---
 
 # 概要
