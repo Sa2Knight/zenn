@@ -8,7 +8,7 @@ published: false
 
 # 概要
 
-Chromatic による Visual testing (a.k.a VRT) を、GitHub Actions から都度実行しているプロジェクトにて、その実行タイミングを制限することで課金額を半分未満にまで削減した事例です。
+GitHub Actions で Chromatic Visual testing (VRT) の実行タイミングを最適化し、課金額を半分以下に削減した事例を紹介します。
 
 # 背景
 
