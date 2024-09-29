@@ -16,12 +16,12 @@ $ yarn add vue-router@4
 
 |ルート|コンポーネント|備考|
 |---|---|---|
-|`/`|`topPage`|`/profile` へのリンクあり|
-|`/profile`|`profilePage`|`/` へのリンクあり|
+|`/`|`TopPage`|`/profile` へのリンクあり|
+|`/profile`|`ProfilePage`|`/` へのリンクあり|
 
 まず、両方ルートに対応するページコンポーネントを作成します。両ページはもう一方へのリンクを持つだけのシンプルなページになってます。
 
-```vue:src/pages/topPage.vue
+```vue:src/pages/TopPage.vue
 <script setup lang="ts"></script>
 
 <template>
@@ -32,7 +32,7 @@ $ yarn add vue-router@4
 </template>
 ```
 
-```vue:src/pages/profilePage.vue
+```vue:src/pages/ProfilePage.vue
 <script setup lang="ts"></script>
 
 <template>
@@ -106,7 +106,7 @@ createApp(App).use(i18n).use(pinia).use(createRouter("history")).mount("#app");
 
 アプリケーションコードと異なり、URL を直接使えないため、 `createMemoryHistory` を使ったオンメモリルーターを生成します。
 
-```ts:.storybook/pinia
+```ts:.storybook/preview.ts
 import i18n from "../src/i18n";
 import pinia, { useCurrentUserStore } from "../src/pinia";
 import { createRouter } from "../src/router";
