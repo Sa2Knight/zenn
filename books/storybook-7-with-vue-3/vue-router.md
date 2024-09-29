@@ -106,7 +106,7 @@ createApp(App).use(i18n).use(pinia).use(createRouter("history")).mount("#app");
 
 アプリケーションコードと異なり、URL を直接使えないため、 `createMemoryHistory` を使ったオンメモリルーターを生成します。
 
-```ts:.storybook/pinia
+```ts:.storybook/preview.ts
 import i18n from "../src/i18n";
 import pinia, { useCurrentUserStore } from "../src/pinia";
 import { createRouter } from "../src/router";
