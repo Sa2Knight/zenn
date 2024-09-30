@@ -111,7 +111,7 @@ console.log(JSON.stringify(MyButton.__docgenInfo, null, 2));
 
 なお、各ストーリーで共通の設定は `meta` に一括で定義できるため、そちらに定義しています。
 
-```ts:src/stories/MyButton.ts
+```ts:src/stories/MyButton.stories.ts
 import MyButton from "../components/MyButton.vue";
 import type { Meta, StoryObj } from "@storybook/vue3";
 
