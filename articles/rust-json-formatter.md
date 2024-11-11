@@ -2,7 +2,7 @@
 title: "Rust 入門がてら JSON フォーマッターを書く"
 emoji: "😺"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["Rust"]
+topics: ["Rust", "contest2024"]
 published: true
 ---
 
